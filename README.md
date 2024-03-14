@@ -11,7 +11,7 @@ Esta guía lista los recursos que debes estudiar si estás preparandote para la 
 
 Todos los recursos de cada apartado los encontrarás en el link del título este podría ser el índice que nos lleva a cada capítulo. Al lado del título de cada apartado indico el número de apartados que he traducido. 
 
-## [Aprende sobre Código como Infraestructura - Learn about infrastructure as Code (IaC)](Learn_about_infrastructure_as_Code.md)  (3/5)
+## [Aprende sobre Código como Infraestructura - Learn about infrastructure as Code (IaC)](Learn_about_infrastructure_as_Code.md)  (4/5)
 Terraform es una herramienta que permite definir infraestructura en código legible tanto por personas como por máquinas. Revisa los siguientes recursos para comenzar a aprender las ventas de la Infraestructura como código (IaC), y las ventagas de Terraform.
 Los recursos que encuentras en este apartado cubren los objetivos 1 y 2 de la certificación. 
 

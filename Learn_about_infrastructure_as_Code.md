@@ -128,6 +128,24 @@ Durante la ejecución, Terraform examinará el estado de la infraestructura en f
 Administrar exitosamente el cilco de vida de la infraestructura es duro, y el impacto de malas decisiones pueden ser significativos, desde financieros hasta reputacionales, incluso la perdida de vidas considerando infraestructuras militares o guvernamentales. La adopción de herramientas IaC como Terraform, en conjunto con procesos, flujos de trabajo, es un paso necesario en la mitigación de riesgos. 
 
 
-### Casos de uso de Terraform - https://developer.hashicorp.com/terraform/intro/v1.1.x/use-cases
+### Casos de uso de Terraform - https://developer.hashicorp.com/terraform/intro/use-cases
 
+#### Casos de uso
 
+#### Despliegues multi-cloud
+
+#### Despliegue de infraestructura de aplicaciones, escalado y herramientas de monitorización. 
+
+#### Clusters propios.
+
+#### Cumplimiento y gestión de Políticas.
+
+#### Configuración de aplicaciones PaaS
+
+#### Redes definidas por Software
+
+#### Kubernetes
+
+#### Entornos Paralelos
+
+#### Demos de software. 

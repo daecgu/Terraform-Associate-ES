@@ -1,5 +1,5 @@
 # Terraform-Associate-ES
-Traducción al Español de la Study Guide y Review Guide para la certificación de HashiCorp.
+Traducción al Español de la Study Guide y Review Guide para la certificación Terraform Associate de HashiCorp.
 Al ser una traducción de las distintas webs que facilita Terraform para realizar este "curso" de preparación, se repite bastante contenido. 
 (Todas las imágenes pertenecen a la documentación oficial de HashiCorp.)
 

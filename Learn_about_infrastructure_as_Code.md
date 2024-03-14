@@ -68,5 +68,66 @@ Terrafrom permite colaborar en tu infraestructura con sus "backends " de estado 
 Además puedes conectar Terraform Cloud al sistema de control de versiones (VCS) como GitHub, GitLab, y otros, permitiendo que proporcione cambios en la infraestructura cuando realizas un "Commit" en el VCS. Esto te permite administrar los cambios en la infraestructura a través del control de versiones, tal y como lo harías en con el código de una aplicación. 
 
 ### Infraestructura como codigo en nubes privadas y públicas - https://www.hashicorp.com/blog/infrastructure-as-code-in-a-private-or-public-cloud/
+Según la tecnología avanza, las herramientas cambian. Como la mayoría de personas ressiten al cambio esto conlleva algún tipo de fracaso hasta que nos decidimos a cambiar nuestra forma de administrar y dirigir. 
+
+Por ejemplo, conforme las empresas migran a la nuve, tienden a gestionar su infraestructura cloud de la misma manera que lo hacían on-premise, accediendo desde GUI o CLI. Estos usuarios no han adoptado la Infraestructura como Código (IaC) a través del uso de herramientas como Terraform de HashiCorp. 
+
+¿Por qué cambiar como definimos y construimos la infraestructura?
+"Virtual compute" nos permitió consruir y aplicar cambios en la configuración mediante comandos software. Mientras que estos comandos, habitualmente son scripts, son dificiles para las personas de entender. Herramientas más moderans aceptan codigo que es más inteligible para personas y máquinas, proporcionando beneficios. Han simplificado el testing, aplicar y llevar seguimiento entre iteraciones, y más importante, ha npermitido que equipos reutilicen componentes (por ejemplo, módulos) a través de distintos proyectos. No hay duda que IaC ha haya obtenido una gran adopción. 
+
+#### IaC y el ciclo de vida de la infraestructura.
+¿Cómo encaja IaC dentro del ciclo de vida de la infraestructura? Puede ser aplicado a lo largo de todo el "lifecycle", tanto en el despliegue inicial como durante la vida de la infraestructura. Habitualmente han sido referidas como actividades del Día 0 y Día 1. El código del día 0 prepara y configura la infraestructura inicial. 
+
+si tu infraestructura no cambia nunca después del despliegue inicial, probablemente no necesites herramientas que ofrezcan actualizaciones, cambios y expansiones. Día 1 se refiere a configuraciones en el sistema operativo y aplicación despues de haber desplegado la estructura inicial. 
+
+IaC hace facil entender la intencionalidad  de cambios en la infraestructura, porque puede abarcar múltiples archivos, permitiendo a las personas organizar el código según la intención. Por ejemplo, se podría crear diferentes ficheros para definir diferentes componentes de infraestructuras, o separar definiciones de variables de los bloques de ejecución sin afectar a la ejecución. 
+
+Aquí hay un ejemplo de código que la herramienta de IaC Terraform utilizaría para aprovisionar un Amazon VPC. Observa cómo el código es legible tanto para personas como para máquinas.
+
+```terraform
+resource "aws_vpc" "default" {
+  cidr_block = "10.0.0.0/16"
+}
+```
+
+Herramientas  como Terraform habitualmente incluyen librerías de proveedores y módulos para hacer fácil escribir el código para realizar las configuraciones. Con térraform, especialmente en el Día 0, es habitual aplicar configuraciones como las que se muestra a continuación, como pueden ser instalar e iniciar un web server:
+
+```terraform
+provisioner "remote-exec" {
+  inline = [
+    "sudo apt-get -y update",
+    "sudo apt-get -y install nginx",
+    "sudo service nginx start"
+    ]
+}
+```
+Si es necesario aplicar Día 1 a través de Día N configuraciones, el código puede aprovechar herramientas como Chef, Ansible, Docker, etc.
+
+```terraform
+provider "chef" {
+  server_url = "https://api.chef.io/organization/example"
+  run_list = [ "recipe[example]" ]
+}
+```
+
+#### IaC hace la infraestructura más confiable
+IaC hace que los cambios sean idempotentes, consistentes, reproducibles, predecibles. Sin IaC, escalar infraestructura para un incremento de la demanda puede requereri un operador remoto para conectarse a cada máquina y luego manualmente configurar muchos servidores ejecutando una serie de comandos o scripts. Puede abrir multiples sesiones y moverse entre ventanas, lo cual sulee resultar en saltarse pasos o haya pequeñas variaciones y que el trabajo se complete o que sea necesario un "rollback". 
+
+Este proceso puede terminar en inconsistencias que deriven en diferencias entre servidores en rendimiento, utilidad o seguridad. Si un equipo está aplicando cambios, el reisgo incrementa, ya que no todos los individuos siguen siempre las instrucciones de la misma manera. 
+
+Mediante IaC,se puede testear el código y revisar los resultados antes de que el código sea aplicado en nuestros entornos. Si un resultado no se ajusta a nuestras expectativas, iteramos sobre el código hasta que los resultados pasen nuestras pruebas y estén alineados con nuestras expectativas. Seguir este modo de trabajar permite que el resultado sea predecido antes de que el código sea aplicado en un entorno de producción.  Una vez listo para utilizar, entonces podemos aplicar el código vía automatización, escalar, y asegurar consistencia y que sea repruducible en cómo se ha aplicado.
+
+Desde que el código ha sido alojado en un sistema de version de controles tal como GitHub, GitLab, BitBucket, etc. Es posible revisar cómo la infraestructura evoluciona en el tiempo. La característica de ser idempotente (la propiedad de que siempre que se multiplique por sí mismo da él mismo, es decir no hay cambio), proporcionada por IaC asegura que, incluso si el mismo codigo es aplicado muchas veces, el resultado se mantiene igual. 
+
+#### IaC hace que la infraestructura sea más manejable.
+Aprovechar la Infraestructura como Código (IaC) de HashiCorp Terraform ofrece beneficios que permiten el cambio a través del código. Considera un entorno que ha sido provisionado y que contiene dos servidores y un balanceador de carga. Para abordar el aumento de carga, se necesitan servidores adicionales. La IaC puede ser revisada, con cambios mínimos, para poner en línea nuevos servidores utilizando la configuración previamente definida.
+
+Durante la ejecución, Terraform examinará el estado de la infraestructura en funcionamiento, determinará las diferencias entre el estado actual y el estado deseado actualizado. Entonces indicará los cambios necesarios que deben aplicarse. Cuando se aprueba, se aplicarán los cambios necesarios, dejando la infraestructura existente sin cambios.
+
+#### La Infraestructura como código Tiene Sentido
+Administrar exitosamente el cilco de vida de la infraestructura es duro, y el impacto de malas decisiones pueden ser significativos, desde financieros hasta reputacionales, incluso la perdida de vidas considerando infraestructuras militares o guvernamentales. La adopción de herramientas IaC como Terraform, en conjunto con procesos, flujos de trabajo, es un paso necesario en la mitigación de riesgos. 
+
 
 ### Casos de uso de Terraform - https://developer.hashicorp.com/terraform/intro/v1.1.x/use-cases
+
+

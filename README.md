@@ -1,25 +1,31 @@
-# Terraform-Associate-ES  - https://developer.hashicorp.com/terraform/tutorials/certification-003/associate-study-003
+# Terraform-Associate-ES  
+### https://developer.hashicorp.com/terraform/tutorials/certification-003/associate-study-003
 Traducción al Español de la Study Guide y Review Guide para la certificación Terraform Associate de HashiCorp.
 Al ser una traducción de las distintas webs que facilita Terraform para realizar este "curso" de preparación, se repite bastante contenido. 
+
 (Todas las imágenes pertenecen a la documentación oficial de HashiCorp.)
 
 # Study Guide - Terraform Associate certification
 
 Esta guía lista los recursos que debes estudiar si estás preparandote para la certificación Terraform Associate. Los recursos aparecen en orden de dificultad para que progreses conforme avanzas en la lista. Los recursos relacionados con un objetivo particular del examen, es preciso ir a Exam Revie Guide. 
 
-## [Aprende sobre Código como Infraestructura - Learn about infrastructure as Code (IaC)](Learn_about_infrastructure_as_Code.md)
- 
-## [Fundamentos de Terraform](Learn_about_infrastructure_as_Code.md)
+Todos los recursos de cada apartado los encontrarás en el link del título este podría ser el índice que nos lleva a cada capítulo. Al lado del título de cada apartado indico el número de apartados que he traducido. 
 
-## [Flujo de Trabajo](Learn_about_infrastructure_as_Code.md)
+## [Aprende sobre Código como Infraestructura - Learn about infrastructure as Code (IaC)](Learn_about_infrastructure_as_Code.md)  (3/5)
+Terraform es una herramienta que permite definir infraestructura en código legible tanto por personas como por máquinas. Revisa los siguientes recursos para comenzar a aprender las ventas de la Infraestructura como código (IaC), y las ventagas de Terraform.
+Los recursos que encuentras en este apartado cubren los objetivos 1 y 2 de la certificación. 
 
-## [Más subcomandos](Learn_about_infrastructure_as_Code.md)
+## [Fundamentos de Terraform](Learn_about_infrastructure_as_Code.md) (0/9)
 
-## [Usa y crea modulos](Learn_about_infrastructure_as_Code.md)
+## [Flujo de Trabajo](Learn_about_infrastructure_as_Code.md) (0/11)
 
-## [Lee y escribe configuraciones](Learn_about_infrastructure_as_Code.md)
+## [Más subcomandos](Learn_about_infrastructure_as_Code.md) (0/6)
 
-## [Administra los estados](Learn_about_infrastructure_as_Code.md)
+## [Usa y crea modulos](Learn_about_infrastructure_as_Code.md) (0/8)
 
-## [Entiende Terraform Cloud](Learn_about_infrastructure_as_Code.md)
+## [Lee y escribe configuraciones](Learn_about_infrastructure_as_Code.md) (0/14)
+
+## [Administra los estados](Learn_about_infrastructure_as_Code.md) (0/16)
+
+## [Entiende Terraform Cloud](Learn_about_infrastructure_as_Code.md) (0/11)
 

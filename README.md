@@ -11,11 +11,14 @@ Esta guía lista los recursos que debes estudiar si estás preparandote para la 
 
 Todos los recursos de cada apartado los encontrarás en el link del título este podría ser el índice que nos lleva a cada capítulo. Al lado del título de cada apartado indico el número de apartados que he traducido. 
 
-## [Aprende sobre Código como Infraestructura - Learn about infrastructure as Code (IaC)](Learn_about_infrastructure_as_Code.md)  (4/5)
+## [Aprende sobre Código como Infraestructura - Learn about infrastructure as Code (IaC)](Learn_about_infrastructure_as_Code.md)  (5/5)
 Terraform es una herramienta que permite definir infraestructura en código legible tanto por personas como por máquinas. Revisa los siguientes recursos para comenzar a aprender las ventas de la Infraestructura como código (IaC), y las ventajas de Terraform.
 Los recursos que encuentras en este apartado cubren los objetivos 1 y 2 de la certificación. 
 
 ## [Fundamentos de Terraform](Learn_about_infrastructure_as_Code.md) (0/9)
+Completa los tutoriales "Get Started"/Iniciate para crear modificar y destruir tu primera infraestructura utilizando Terraform y aprender acerca de los Terraform providers y los conceptos básicos de Terraform state.
+
+Esta sección cubre el objetivo 3: Terraform Basics.
 
 ## [Flujo de Trabajo](Learn_about_infrastructure_as_Code.md) (0/11)
 

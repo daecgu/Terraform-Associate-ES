@@ -125,20 +125,37 @@ Aprovechar la Infraestructura como Código (IaC) de HashiCorp Terraform ofrece b
 Durante la ejecución, Terraform examinará el estado de la infraestructura en funcionamiento, determinará las diferencias entre el estado actual y el estado deseado actualizado. Entonces indicará los cambios necesarios que deben aplicarse. Cuando se aprueba, se aplicarán los cambios necesarios, dejando la infraestructura existente sin cambios.
 
 #### La Infraestructura como código Tiene Sentido
-Administrar exitosamente el cilco de vida de la infraestructura es duro, y el impacto de malas decisiones pueden ser significativos, desde financieros hasta reputacionales, incluso la perdida de vidas considerando infraestructuras militares o guvernamentales. La adopción de herramientas IaC como Terraform, en conjunto con procesos, flujos de trabajo, es un paso necesario en la mitigación de riesgos. 
+Administrar exitosamente el cilco de vida de la infraestruhttps://registry.terraform.io/browse/providersctura es duro, y el impacto de malas decisiones pueden ser significativos, desde financieros hasta reputacionales, incluso la perdida de vidas considerando infraestructuras militares o guvernamentales. La adopción de herramientas IaC como Terraform, en conjunto con procesos, flujos de trabajo, es un paso necesario en la mitigación de riesgos. 
 
 
 ### Casos de uso de Terraform - https://developer.hashicorp.com/terraform/intro/use-cases
-
-#### Casos de uso
+Esta página describe formas habituales en la que Terraform se utiliza, también se proporcionan recursos relacionas que puedes utilizar para crear configuraciones y flujos de trabajo. 
 
 #### Despliegues multi-cloud
+Desplegar infraestructura a través de múltiples nubes aumenta la tolerancia a falos, permitiendo una recuperación elegante ante los posibles cortes. Sin embargo, los despliegues multi-nube añaden complejidad porque cada proveedor tiene sus propias interfaces, herramientas y flujos de trabajo. Terraform permite queuses el mismo flujo de trabajo para administrar diversos proveedores y manejar dependencias entre nubes. Esto simplifica la gestión y orquestación a gran escala e infraestructuras multicloud.
+
+Recursos: 
+- Realiza el tutorial [Deploy Federated Multi-Cloud Kubernetes Clusters](https://developer.hashicorp.com/terraform/tutorials/networking/multicloud-kubernetes) para aprovisionar clusters de Kubernetes en Azure y AWS, configura la federación Consul con gateways de malla a través de los dos clústers, y despliega microservicios a lo largo de los dos clusters para verificar la federación.
+- Navega en el [Terraform Registry](https://registry.terraform.io/browse/providers) para encontrar miles de "Providers" disponibles. 
 
 #### Despliegue de infraestructura de aplicaciones, escalado y herramientas de monitorización. 
+Puedes usar Terraform para desplegar, publicar, escalar y monitorizar infraestructura para aplicaciones de múltiples capas. La arquitectura de aplicaciones de N-capas permite escalar los componentes de la aplicación de manera independiente. Una aplicación podría consistir de un conjunto de servidores web que utilizan una capa de base de datos, y con capas adicionales para servidores API, servidores cache, y mallas de enrutamiento. Terraform permite administrar los recursos en cada capa juntos, y automáticamente gestiona las dependencias entre niveles. Por ejemplo Terraform desplegara una base de datos antes que ofrecer los servidores web que dependen del a base de datos. 
+
+Recursos: 
+- Realiza el tutorial [Automate Monitorin with the Terraform Datadog Provider](https://developer.hashicorp.com/terraform/tutorials/applications/datadog-provider) para desplegar una demo de aplicación Nginx dentro de un Cluster de Kubernetes con Helm e instalar el agente Datadog en el cluster. El Agetne Datadog reporta el estado del cluster al panel Datadog.
+- Realiza el tutorial [Use Application Load Balancer for Blue-Green and Canary Deployments](https://developer.hashicorp.com/terraform/tutorials/aws/blue-green-canary-tests-deployments). Implementaras los entornos azul y verde, añadirás interruptores a confiuración de terrafom para definir una lista de estrategias de despliegue potenciales, realizarás una "canary test", e incrementarás tu entorno verde. 
 
 #### Clusters propios.
+En una gran organización, el equipo de operaciones centralizado, puede tener muchas peticiones de infraestructura repetitivas. Puedes utilizar Terraform para construir un modelo de infraestructura "self-serve", que permita a los equipos de producción manejar su infraestructura de forma independiente.  Puedes crear y utilizar Terraform modulos que codifiquen los estandares para el desplegar y gestionar servicios en tu organización, permitiendo que los equipos desplieguen eficientemente servicios, en conformidad con las prácticas de la organización. Terraform Cloud también se puede ntegrar con sistemas de ticketing para automáticamente generar solicitudes de infraestructura. 
+
+Recursos: Intenta realizar el utotrial [Use Modules from the Registry](https://developer.hashicorp.com/terraform/tutorials/modules/module-use) para iniciarte en el uso de modulos públicos en tu configuración de Terraform. Intenta el tutorial [Build and Use a Local Module](https://developer.hashicorp.com/terraform/tutorials/modules/module-create) para crear un modulo para administrar AWS S3 Buckets. 
 
 #### Cumplimiento y gestión de Políticas.
+Terraform puede facilitar obligar el cumplimiento de las políticas en el tipo de recursos qeu los equipos pueden facilitar y utilizar. Los procesos de revisión basados en tickets son un cuello de botella que puede ralentaizar el desarrollo. En su lugar, puedes usar Sentinel, un marco de políticas como código, para hacer cumplir automáticamente las políticas de cumplimiento y gobernanza antes de que Terraform realice cambios en la infraestructura. Las políticas de Sentinel están disponibles en Terrafom Enterprise y Terraform Cloud.
+
+Recursos:
+- Realiza el tutorial [Control Costs with Policies](https://developer.hashicorp.com/terraform/tutorials/cloud-get-started/cost-estimation) para estimar el costo del cambio de infraestructura y definir la política para limitarlo.
+- La [documentación Sentinel](https://developer.hashicorp.com/terraform/cloud-docs/policy-enforcement) facilita en mayor profundiad información y una lista de ejemplos de políticas que se pueden adaptar a tus casos de uso.
 
 #### Configuración de aplicaciones PaaS
 

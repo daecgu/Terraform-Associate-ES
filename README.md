@@ -15,20 +15,20 @@ Todos los recursos de cada apartado los encontrarás en el link del título este
 Terraform es una herramienta que permite definir infraestructura en código legible tanto por personas como por máquinas. Revisa los siguientes recursos para comenzar a aprender las ventas de la Infraestructura como código (IaC), y las ventajas de Terraform.
 Los recursos que encuentras en este apartado cubren los objetivos 1 y 2 de la certificación. 
 
-## [Fundamentos de Terraform](Learn_about_infrastructure_as_Code.md) (0/9)
-Completa los tutoriales "Get Started"/Iniciate para crear modificar y destruir tu primera infraestructura utilizando Terraform y aprender acerca de los Terraform providers y los conceptos básicos de Terraform state.
+## [Fundamentos de Terraform](Review_Terraform_fundamentals.md) (1/9)
+Completa los tutoriales ["Get Started"](https://developer.hashicorp.com/terraform/tutorials/aws-get-started) para crear modificar y destruir tu primera infraestructura utilizando Terraform y aprender acerca de los Terraform providers y los conceptos básicos de Terraform state.
 
 Esta sección cubre el objetivo 3: Terraform Basics.
 
-## [Flujo de Trabajo](Learn_about_infrastructure_as_Code.md) (0/11)
+## [Flujo de Trabajo](.md) (0/11)
 
-## [Más subcomandos](Learn_about_infrastructure_as_Code.md) (0/6)
+## [Más subcomandos](.md) (0/6)
 
-## [Usa y crea modulos](Learn_about_infrastructure_as_Code.md) (0/8)
+## [Usa y crea modulos](.md) (0/8)
 
-## [Lee y escribe configuraciones](Learn_about_infrastructure_as_Code.md) (0/14)
+## [Lee y escribe configuraciones](.md) (0/14)
 
-## [Administra los estados](Learn_about_infrastructure_as_Code.md) (0/16)
+## [Administra los estados](.md) (0/16)
 
-## [Entiende Terraform Cloud](Learn_about_infrastructure_as_Code.md) (0/11)
+## [Entiende Terraform Cloud](.md) (0/11)
 

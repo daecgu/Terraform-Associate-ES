@@ -1,14 +1,18 @@
 # Fundamentos de Terraform
 
 Completa los tutoriales ["Get Started"](https://developer.hashicorp.com/terraform/tutorials/aws-get-started) para crear modificar y destruir tu primera infraestructura utilizando Terraform y aprender acerca de los Terraform providers y los conceptos básicos de Terraform state.
-## Tutoriales
+<details>
+<summary> Tutoriales "Get Started" </summary>
+  
 Algunos tutoriales tienen laboratorios interactivos, o tienen su documentación para Windos/Linux/Mac. EN ESTE PROYECTO DE TRADUCCIÓN únicamente cubriré Linux y en concreto Ubuntu/Debian, el resto quedan en los enlaces a la la página original que traduzco. 
+
 ### [¿Qué es infraestructura como código con Terraform?](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/infrastructure-as-code)
 Este tutorial está traducido en la sección [Aprende acerca de la infraestructura como código (IAC)](https://github.com/daecgu/Terraform-Associate-ES/blob/main/Learn_about_infrastructure_as_Code.md#introducucci%C3%B3n-a-la-infraestructura-como-c%C3%B3digo-con-terraform---httpsdeveloperhashicorpcomterraformtutorialsaws-get-startedinfrastructure-as-code). Por lo tanto no lo traduciré nuevamente en esta sección.
 
 Contiene un Laboratorio Interactivo.
 
 ### [Instalación de Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+<details>
 Para utilizar Terraform es necesario instalarlo. HashiCorp distribuye Terraform como un paquete binario. También puedes instalar Terraform utilizando administradores de paquetes.
 
 HashiCorp Oficialmente mantiene y firma oficialmente paquetes para las siguientes distribuciones Linux: Ubuntu/Debian, CentOS/RHEL, Fedora y Amazon Linux. 
@@ -78,13 +82,74 @@ terraform -install-autocomplete
 Una vez que está enstalado el autocompletado, necesitarás reiniciarl la Shell.
 
 #### Tutorial de inicio Rápido
+Ahora que hemos instalado Terraform, vamos a provisionar un servidor NGINX en menos de un minuto utilizando Docker en Linux.
+Es preciso tener instalado [Docker Engine](https://docs.docker.com/engine/install/) para poder continuar con este tutorial.
 
-
-
-Texto
----------------
-```  ```
---------------
+Crea un directorio llamado ```learn-terraform-docker-container```.
 ```sh
+mkdir learn-terraform-docker-container
+```
+En este directorio de trabajo albergaremos los archivos de configuración que describen la infraestructura que deseamos que Terraform cree y administre. Cuando inicializas y aplicas la configuracíon aquí, Terraform utiliza este directorio para guardar los plugins, modulos y la información acerca de la infraestructura real que ha creado.
+
+Vamos al directorio en le que queremos trabajar:
+```sh
+cd learn-terraform-docker-container
+```
+
+En el directorio de trabajo, crea un archivo llamado ```main.tf``` y pégalo en la siguiente configuración de Terraform en él. 
+
+```terraform
+terraform {
+  required_providers {
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "~> 3.0.1"
+    }
+  }
+}
+
+provider "docker" {}
+
+resource "docker_image" "nginx" {
+  name         = "nginx"
+  keep_locally = false
+}
+
+resource "docker_container" "nginx" {
+  image = docker_image.nginx.image_id
+  name  = "tutorial"
+
+  ports {
+    internal = 80
+    external = 8000
+  }
+}
 
 ```
+
+Inicializa el proyecto, lo que hará que descargue un "provider" que permite a Terraform interactuar con Dcoker.
+```sh
+terraform init
+```
+Vamos a desplegar el contenedor de servidor NGINX con ```apply```. Cuando Terrafom pregunte por la confirmación deberemos responder ```yes``` y presionar ```enter```.
+```sh
+terraform apply
+```
+Verifica que el contenedor Nginx esté funcionando correctamente visitando <a href="http://localhost:8000">localhost:8000</a> en tu navegador web o ejecuta el comando ```docker ps``` para ver el contenedor.
+
+<img src="https://developer.hashicorp.com/_next/image?url=https%3A%2F%2Fcontent.hashicorp.com%2Fapi%2Fassets%3Fproduct%3Dtutorials%26version%3Dmain%26asset%3Dpublic%252Fimg%252Fterraform%252Fgetting-started%252Fterraform-docker-nginx.png%26width%3D2048%26height%3D510&w=2048&q=75" width="900" height="200">
+
+```sh
+$ docker ps
+CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS              PORTS                    NAMES
+425d5ee58619        e791337790a6              "nginx -g 'daemon of…"   20 seconds ago      Up 19 seconds       0.0.0.0:8000->80/tcp     tutorial
+```
+Ahora vamos a parar el contenedor utilizando el siguiente comando:
+```sh
+terraform destroy
+```
+Ya has desplegado y destruido un servidor web NGINX con Terraform. 
+</details>
+
+
+</details>

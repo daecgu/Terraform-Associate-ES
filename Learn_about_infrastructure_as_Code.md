@@ -158,11 +158,31 @@ Recursos:
 - La [documentación Sentinel](https://developer.hashicorp.com/terraform/cloud-docs/policy-enforcement) facilita en mayor profundiad información y una lista de ejemplos de políticas que se pueden adaptar a tus casos de uso.
 
 #### Configuración de aplicaciones PaaS
+Los proveedores de Plataforma como servicio (PaaS) como Heroku, permiten crear aplicaciones web y añadir add-ons, como bases de datos o proveedores de email. Heroku puede escalar elásticamente el número de dynos o trabajadores, pero la mayoría de las aplicaciones no triviales necesitan mucho complementos y servicios externos. Puedes usar terraform para escribir la configuración requerida para una aplicación Heroku, configurar un DNSimple opara establecer un CNAME y configurar Cloudflare como una Red de Entreta de contenido (CDN) para la aplicación. Terraform puede rápidamente y consistentemente hacer todo esto sin una interfaz web.
 
+Recursos:
+- Realiza el tutorial [Deploy,manage, and Scale an Application on Heroku](https://developer.hashicorp.com/terraform/tutorials/applications/heroku-provider) para administar el ciclo de vida de una aplicación con Terraform.
+
+  
 #### Redes definidas por Software
+Terraform puede interactuar con Software Defined Networks (SDNs) para automáticamente configurar la red de acuerdo a las necesidades de la aplicación que está corriendo en ella. Esto permite pasar de un flujo de trabajo basado en tickets a uno automátizado, reduciendo el tiempo de despliegue. 
+
+Por ejemplo, cuando un servicio se registra en [HashiCorp Consul](https://www.consul.io/), [Consul-Terraform-Sync](https://developer.hashicorp.com/consul/docs/nia) puede automáticamentegenerar una configuración Terraform para exponer los puertos apropiados y ajustar la configuración de la red para para cualquier SDN que tenga asociado un Terraform Provider. La infraestructura de red automatizada (Network Infraestructur Automatio - NIA) permite aprobar cambios de forma segura sin tener que traducir manualmente los tickets de los desarrolladores en los cambios que crees que su aplicación necesita.
+
+Recursos:
+- Realiza el tutorial [Network Infrastructure Automation with Consul-Terraform-Sync Intro](https://developer.hashicorp.com/consul/tutorials/network-infrastructure-automation/consul-terraform-sync-intro) para instalar el Consul-Terraform-Sync en un nodo. Lo configurarás para que se comunique con un centro de datos Consul, reaccionar a los cambios en el servicio, y ejecutar una tarea de ejemplo.
+- Realiza el tutorial [Consul-Terraform-Sync And terraform Enterprise/Cloud Integration](https://developer.hashicorp.com/consul/tutorials/network-infrastructure-automation/consul-terraform-sync-terraform-enterprise) para configurar Consul-Terraform-Sync para que interactue con Terraform Enterprise y Terraform Cloud.
+
 
 #### Kubernetes
+Kubernetes es un programador de cargas de trabajo de ćodigo abierto para aplicaciones contenerizadas. Terraform permite tanto desplegar un clúster de Kubernetes como administrar sus recursos (por ejemplo: pods, deployments, services, etc.) También se puede utilizar el [Kubernetes Operator for Terraform](https://github.com/hashicorp/terraform-k8s) para gestionar infraestructura cloud y on-prem a través de un Kubernetes Custom Resource Definition (CRD) y Terraform Cloud.
+
+Recursos:
+- Realiza el tutorial [Manage Kubernetes Resources via Terraform](https://developer.hashicorp.com/terraform/tutorials/kubernetes/kubernetes-provider). Utilizarás terraform para programar y exponer un despliegue de Nginx en un cluster de Kbuernetes.
+- Realiza el tutorial [Deploy INfrastructure with the Terraform Cloud Operator for Kubernetes](https://developer.hashicorp.com/terraform/tutorials/kubernetes/kubernetes-operator). Configurarás y desplegaras el Operador en un cluster Kubernetes y lo utilizaras para crear un espacio de trabajo Terraform Cloud y y provisionar un mensaje de cola para un ejemplo de aplicación. 
 
 #### Entornos Paralelos
+Es probable que tengas entornos de prueba o de control de calidad (QA) que utilizas para probar nuevas aplicaciones antes de lanzarlas en producción. A medida que el entorno de producción se vuelve más grande y complejo, puede ser cada vez más dificl mantener un entorno actualizado para cada etapa del proceso de desarrollo. Terraform Permite crear y desmantelar infrastructura para desarrollar purebas, QA y producción. Terraform permite crear entornos desechables según sea necesario, sienod más eficiente en términos de costo que mantener cada uno indefinidamente.
 
 #### Demos de software. 
+Puedes utilizar Terraform para crear, provisionar e inicializar una demostración en varios proveedores de nube. Esto permite a los usuarios finales probar fácilmente el software en su propia infrastructura e incluso les habilita para ajustar parámetros como el tamaño del clúster para probar las herramientas de manera más rigurosa a cualquier escala. 

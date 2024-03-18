@@ -293,6 +293,36 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 Has creado infraestructura utilizando Terraform. Puedes visitar la consola EC2 y encontrar tu instancia. 
 
+#### Inspecciona el esatdo
+Cuando la configuración ha sido aplciada, Terraform escribe datos en un fichero denominado ```terraform.tfstate```. Terraform guarda los IDs y propiedades de los recursos que administra en este archivo, de manera que pueda atualizar o destruir esos recursos en adelante.
+
+El archivo Terraform state es la única manera en la que Terraform puede hacer seguimento de los recursos que administra, y habitualmente contiene información sensible, por lo que debes guardar este archivo de estado de forma segura y con acceso restringido a aquellos miembros del equipo que deben administrar la infraestructura. En producción recomendamos [guardar tu archivo de estado remotamente](https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-migrate) con Terraform Cloud o Terraform Enterprise. Terraform también soporta otros "[remote backends](https://developer.hashicorp.com/terraform/language/settings/backends/configuration)" que puedes utilizara para almacernar y administrar tu archivo state. 
+
+Inspeciona el estado actual utilizando ```terraform show```.
+
+Cuando Terraform crea esta instancia Ec2, genera los metadatos del recurso desde el AWS provider y escribe los metadatos en este archivo state. En tutoriales posteriores, modificarás tu configuración para hacer referencia a estos valores y configurar otros recursos y valroes de salida.
+
+#### Administrar manualmente el archivo State. 
+Terraform tiene un comando denominado ```terraform state``` para administración avanzada del archivo state. Utiliza el subcomando ```list``` para listar los recursos de tu proyecto. 
+
+#### Solución de Problemas
+Si ```terraform validate``` ha sido exitosa y tu ```apply``` ha fallado, puede que te encuentres uno de estos errores comunes:
+- Si utilizaste una región equivocada (en este caso una región diferente a ```us-west-2```), deberaś cambiar tu ```ami```, dado que AMI IDs son especificos de la región. Elige un AMI ID especifico para tu región siguiendo [estas instrucciones](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html#finding-quick-start-ami), y modifica ```main.tf``` con este id. Entonce vuelva a lanzar ```terraform apply```.
+- si no tienes una VPC por defecto en tu cuenta AWS in la región correcta, navega a AWS VPC Dashboard en la interfaz web, crea una nueva VPC en tu región y asocia una subnet y un grupo de seguridad a esa VPC. Entonces añadie el ID del grupo de seguridad  (```vpc_security_gorup_ids```) y el OD de la subred (```subnet_id```) como argumentos al recurso ```aws_instance```", y reemplaza los valoers con los nuevos de tu grupo de seguridad y subnet.
+
+```terraform
+ resource "aws_instance" "app_server" {
+   ami                    = "ami-830c94e3"
+   instance_type          = "t2.micro"
++  vpc_security_group_ids = ["sg-0077..."]
++  subnet_id              = "subnet-923a..."
+ }
+```
+
+Guarda los cambios en main.tf, y vuelve a lanzar el comando ```terraform apply```. 
+
+Recuerda añadir estas líneas a tu configuración para tutoriales posteriores. Para más inforamción, mira [este documento](https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html) de AWS para trabajar con VPCs. 
+
 
 
 </detail>

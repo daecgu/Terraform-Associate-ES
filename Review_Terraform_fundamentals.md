@@ -477,6 +477,42 @@ Establecer variables a través de la línea de comandos no guardará estos valor
 
 </details>
 
+### [Consulta de datos mediante "outputs"](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/aws-outputs)
+<details>
+
+En el tutorial anterior, utilizamos una variable de entrada para parametrizar la coriguración de Terraform. En este tutorial utilizaremos "output values" para presentar información útil para el usuario de Terraform. 
+
+Si no has terminado el tutorial anterior, hazo antes de continuar con este.
+
+#### Output EC2 instance configuration
+Crea un archivo llamado ```outputs.tf``` en tu carpeta ```learn-terraform-aws-instance```.
+
+Agrega la siguiente configuración al fichero ```outputs.tf``` para definir las salidas para tu instancia EC2: ID y dirección IP.
+
+```terraform
+output "instance_id" {
+  description = "ID of the EC2 instance"
+  value       = aws_instance.app_server.id
+}
+
+output "instance_public_ip" {
+  description = "Public IP address of the EC2 instance"
+  value       = aws_instance.app_server.public_ip
+}
+```
+
+#### Inspecciona los valores de salida
+Debes aplicar los cambios en la configuración antes de poder utilizar estos output values. Aplica la configuración mediante el commando ```terraform apply``` y responde ```yes``` a la solicitud de confirmación.
+
+Terraform mostrará los output values en la pantalla cuando apliques tu configuración. Puedes solicitar los valores output mediante el comando ```terraform output```. 
+
+Puedes utilizar los Terraform outputs para conectar tus proyectos Terraform con otras partes de tu infraestructura o con otros proyectos Terraform. Para aprender más, sigue el tutoria len profundidad: [Output Data from Terraform](https://developer.hashicorp.com/terraform/tutorials/configuration-language/outputs)
+
+#### Destruye tu infraestructura.
+Destruye tu infrasestructura mediante el comando ```terraform destroy``` a no ser que planees continuar con los tutoriales que siguen. Responde a la confirmación ```yes```.
+
+</details>
+
 
 
 ________________________________________________

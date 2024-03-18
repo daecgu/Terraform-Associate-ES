@@ -7,9 +7,11 @@ Completa los tutoriales ["Get Started"](https://developer.hashicorp.com/terrafor
 Algunos tutoriales tienen laboratorios interactivos, o tienen su documentación para Windos/Linux/Mac. EN ESTE PROYECTO DE TRADUCCIÓN únicamente cubriré Linux y en concreto Ubuntu/Debian, el resto quedan en los enlaces a la la página original que traduzco. 
 
 ### [¿Qué es infraestructura como código con Terraform?](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/infrastructure-as-code)
+<details>
 Este tutorial está traducido en la sección [Aprende acerca de la infraestructura como código (IAC)](https://github.com/daecgu/Terraform-Associate-ES/blob/main/Learn_about_infrastructure_as_Code.md#introducucci%C3%B3n-a-la-infraestructura-como-c%C3%B3digo-con-terraform---httpsdeveloperhashicorpcomterraformtutorialsaws-get-startedinfrastructure-as-code). Por lo tanto no lo traduciré nuevamente en esta sección.
 
 Contiene un Laboratorio Interactivo.
+</details>
 
 ### [Instalación de Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 <details>
@@ -325,8 +327,8 @@ Recuerda añadir estas líneas a tu configuración para tutoriales posteriores. 
 
 </details>
 
-### Cambiar infraestructura
-<detail>
+### [Cambiar infraestructura](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/aws-change)
+<details>
 En el último tutorial, creaste tu primera infraestructura con Terraform: una instancia EC2 en AWS. En este tutorial, modificaras ese recurso y aprenderás cómo aplicar cambios a tus proyectos Terraform.
 
 La infraestructura evoluciona constantemente, y Terraform te ayuda a administrar ese cambio. Conforme cambias las configuraciones de Terraform, Terraform construye un plan de ejecuión que solo modifica lo que es neceasrio para alcanzar el estado deseado. 
@@ -377,7 +379,7 @@ Ahora actualiza el ```ami``` de tu instancia. Cambia el recurso ```aws_instance.
    instance_type = "t2.micro"
  }
 ```
-</details>
+
 
 Esta actualización cambia el AMI a un Ubuntu 16.04 AMI. El AWS provider sabe que no puede cambiar el AMI de una instancia después de que haya sido creada, por lo que Terraform destruirá la instancia vieja y creará una nueva.
 
@@ -391,5 +393,9 @@ Adicionalmente, el plan de ejecución muestra que el cambio de AMI es lo que fue
 Nuevamente, Terraform pregunta por autorización para el plan de ejcución antes de proceder. Responde ```yes``` para que se ejecuten todos los pasos planeados. 
 
 Como se ha indicado en el plan de ejecución, Terraform primeramente destruye la instancia existente y luego crea una nueva en su sitio. Puedes usar ```terraform show``` para que Terraform muestre los nuevos valores asociados al a instancia. 
+</details>
+
+
+
 ________________________________________________
 </details>

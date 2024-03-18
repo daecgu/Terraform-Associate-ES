@@ -323,8 +323,73 @@ Guarda los cambios en main.tf, y vuelve a lanzar el comando ```terraform apply``
 
 Recuerda añadir estas líneas a tu configuración para tutoriales posteriores. Para más inforamción, mira [este documento](https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html) de AWS para trabajar con VPCs. 
 
+</details>
 
+### Cambiar infraestructura
+<detail>
+En el último tutorial, creaste tu primera infraestructura con Terraform: una instancia EC2 en AWS. En este tutorial, modificaras ese recurso y aprenderás cómo aplicar cambios a tus proyectos Terraform.
 
-</detail>
+La infraestructura evoluciona constantemente, y Terraform te ayuda a administrar ese cambio. Conforme cambias las configuraciones de Terraform, Terraform construye un plan de ejecuión que solo modifica lo que es neceasrio para alcanzar el estado deseado. 
+
+Cuando utilizamos Terraform en proudcción, se recomienda utilizar un sistema de control de versiones para administrar los archivos de configuración y guardar en un Backend remoto los archivos State, como por ejemplo Terraform Cloud o Terraform Enterprise.
+
+#### Prerequisitos.
+Este tutorial asume que estás continuando de los tutoriales anteriores. Sino, sigue los pasos siguiente antes de continuar.
+- Instala Terraform CLI y AWS CLI, como se describe en el último tutorial.
+- Crea un directorio llamado ```learn-terraform-aws-instance``` y copia pega la siguiente configuración en un archivo llamado ```main.tf```.
+
+```terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
+
+  required_version = ">= 1.2.0"
+}
+
+provider "aws" {
+  region  = "us-west-2"
+}
+
+resource "aws_instance" "app_server" {
+  ami           = "ami-830c94e3"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "ExampleAppServerInstance"
+  }
+}
+```
+- Inicializa la configuración mediante el comando ```terraform init```.
+- Aplica la configuración mediante el comando ```terraform apply``` y responde a la solicitud de confirmación con ```yes```.
+
+Una vez que has aplicado exitosamente la confiuración, puedes continuar con el resto del tutorial.
+
+#### Configuración 
+Ahora actualiza el ```ami``` de tu instancia. Cambia el recurso ```aws_instance.app_server``` dentro del bloque resource en ```main.tf``` reemplazando el ami con uno nuevo.
+
+```diff
+ resource "aws_instance" "app_server" {
+-  ami           = "ami-830c94e3"
++  ami           = "ami-08d70e59c07c61a3a"
+   instance_type = "t2.micro"
+ }
+```
+</details>
+
+Esta actualización cambia el AMI a un Ubuntu 16.04 AMI. El AWS provider sabe que no puede cambiar el AMI de una instancia después de que haya sido creada, por lo que Terraform destruirá la instancia vieja y creará una nueva.
+
+#### Aplica los cambios
+Después de cambiar la configuración, ejecuta el comando ```terraform apply``` nuevamente verás cómo Terraform aplica este cambio en los recursos existentes. 
+
+El prefijo ```-/+``` significa que Terraform destruirá y recreará el recurso en vez de actualizar el recurso. Terraform puede actualizar algunos atributos (indicando con el prefijo ```~```), pero cambiar el AMI para una instancia EC2 requiere recrearla. Teerraform maneja estos detalles por ti, y la ejecución muestra lo que Terraform hará. 
+
+Adicionalmente, el plan de ejecución muestra que el cambio de AMI es lo que fuerza a Terraform a sustituir la instancia. Utilizando esta información, puedes ajustar los cambios para evitar actualizaciones destructivas si es necesario. 
+
+Nuevamente, Terraform pregunta por autorización para el plan de ejcución antes de proceder. Responde ```yes``` para que se ejecuten todos los pasos planeados. 
+
+Como se ha indicado en el plan de ejecución, Terraform primeramente destruye la instancia existente y luego crea una nueva en su sitio. Puedes usar ```terraform show``` para que Terraform muestre los nuevos valores asociados al a instancia. 
 ________________________________________________
 </details>

@@ -395,6 +395,29 @@ Nuevamente, Terraform pregunta por autorización para el plan de ejcución antes
 Como se ha indicado en el plan de ejecución, Terraform primeramente destruye la instancia existente y luego crea una nueva en su sitio. Puedes usar ```terraform show``` para que Terraform muestre los nuevos valores asociados al a instancia. 
 </details>
 
+### [Destruye infraestuctura](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/aws-destroy)
+<details>
+Ya has creado y actualizado una instnacia EC2 en AWS con Terraform. En este tutorial utilizarás Terraform para destruir esta infraestuctura.
+
+Una vez que no necesites más esta infraestructura, puedes uqerer destruirla para reducir costos y vulnerabilidades de seguridad. Por ejemplo, si quieres eliminar un entorno de producción de un servicio, o administrar entornos de vida cortos o sistemad de pruebas. Además de construir y modificar infraestuctura, Terraform puede destruir o recrear la infraestuctura que gestiona.
+
+#### Destruye
+El comando ```terraform destroy``` termina con los recursos manjeados por nuestro proyecto de Terraform. Este comando es el inverso a ```terraform apply```, en el que se termina con todos los recurso especificados en el Terraform State. No destruye recursos que no estén administrado por el proyecto atctual de Terraform. 
+
+Destruye los recursos creado mediante el comando ```terraform destroy```.
+El prefijo ```-``` indica que esa instancia será destruida. De igual manera que en apply, terraform muestra su plan de ejecución y espera autorización antes de aplicar cualquier cambio.
+
+Responde ```yes``` para ejecutar este plan y destruir la infraestuctura. 
+
+De igual manera que con ```apply```, Terraform determina el orden en el que se destruyen los recursos. En este caso, Terraform identifica una única instancia sin ninguna dependencia, por lo que destruye la instancia. En casos más complicados con múltiples recursos, Terraform los destruirá en un orden adecuado para respetar las dependencias.
+</details>
+
+### [Define variables de entrada](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/aws-variables)
+
+<details>
+
+</details>
+
 
 
 ________________________________________________

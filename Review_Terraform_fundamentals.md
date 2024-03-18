@@ -415,6 +415,65 @@ De igual manera que con ```apply```, Terraform determina el orden en el que se d
 ### [Define variables de entrada](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/aws-variables)
 
 <details>
+Los ejemplos que hemos realizado hasta ahora utilizan valores "hard-coded". Las configuraciones Terraform puede incluir variables para hacer tu confirguración más dinámica y flexible.
+
+#### Prerequisitos
+- Tener un directorio llamado ```learn-terraform-aws-instance``` con la siguiente configuración en un fichero llamado ```main.tf```:
+```terraform
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
+
+  required_version = ">= 1.2.0"
+}
+
+provider "aws" {
+  region  = "us-west-2"
+}
+
+resource "aws_instance" "app_server" {
+  ami           = "ami-08d70e59c07c61a3a"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "ExampleAppServerInstance"
+  }
+}
+```
+Asegurate que tu configuración coincide con esta, y que has ejecutado el comando ```terraform init``` en el directorio ```learn-terraform-aws-instance```.
+
+####Establece el nombre de la instancia con una variable
+La configuración actual incluye una serie de valores "hard-coded". Las variables Terraform permite escribir configuraciones que son flexibles y fáciles de reutilizar.
+
+añade una variable que defina el nombre de la instancia. Para ello:
+Crea un nuevo archivo llamado ```variables.tf``` con un bloque que defina una nueva variable ```instance_name```.
+
+```terraform
+variable "instance_name" {
+  description = "Value of the Name tag for the EC2 instance"
+  type        = string
+  default     = "ExampleAppServerInstance"
+}
+```
+
+Date cuenta de que Terraform carga todos los archivos en el directorio actual que terminen en ```.tf```, por lo que puedes nombrar tus archivos de configuración como desees. 
+
+En ```main.tf```, actualiza el bloque de recurso ```aws_instance``` para utilizar la nueva variable. El nombre de instancia ```instance_name``` tomará su valor por defecto a menos que declares un valor diferente. 
+
+#### Aplica tu configuración
+Aplica la configuración y responde a la solicitud de confirmación ```yes```.
+
+Ahora aplica la configuración de nuevo, pero esta vez vamos a sobreescribir el valor por defecto del nombre de la instancia utilizando ```-var``` flag.  Terraform Actualizara la etiqueta ```Name``` con el nuevo nombre. Recuerda responder al prompt de confirmación con un ```yes```.
+
+```sh
+terraform apply -var "instance_name=YetAnotherName"
+```
+
+Establecer variables a través de la línea de comandos no guardará estos valores. Terraform soporta muchas maneras de utilizar y establecer variables, e manera que puedas evitar introducirlas repetidasveces conforme vas ejecutando comandos. Para aprender más, sigue el tutoria en profundidad: [Customize Terraform Configuration with Variables](https://developer.hashicorp.com/terraform/tutorials/configuration-language/variables)
 
 </details>
 

@@ -238,6 +238,63 @@ Los bloques de recursos tienen dos grupos de "string" antes del bloque: el tipo 
 
 Los bloques de recurso contienen argumentos que utilizas para configurar el recurso. Argumentos pueden contener cosas como: tamaño de máquina, imágenes de Disco, VPC IDs. Nuestra [referencia de providers](https://developer.hashicorp.com/terraform/language/providers) indica los argumentos opcionales y requeridos para cada recurso. Para la instancia EC2, la configuración de ejemplo establece la AMI ID una imagen de Ubuntu, y el tipo de instancia a ```t2.micro```, que califica dentro del rango gratuito de AWS. Además establece una etiqueta para darle un nombre a la instancia. 
 
+#### Inicializa el directorio.
+Cuando creas una configuración nueva -- or compruebas una configuración existente desde con ocntrol de versiones -- necesitas inicializar el directorio con ```terraform init```.
+
+Inicializar un directorio de configuración descarga e instala los providers definidos en la configuración, en este caso ```aws``` provider.
+
+Inicializa el directorio:
+
+```sh
+terraform init
+```
+
+Terraform descarga el provider ```aws``` y lo instala en unsubdirectorio oculto de tu directorio de trabajo llamado ```.terraform```. El comando ```terraform init``` indica qué versión del provider ha sido instalada. Terraform además crear a un archivo denominado ```.terraform.lock.hcl``` que especifica la versión exacta del provider, de manera que puedas controlar cuando quieres actualizar el privider utilizado para el proyecto. 
+
+#### Da formato y valida la configuración
+Recomendamos utilizar un formato consistente en todos tus archivos de configuración. El comando ```terraform fmt``` automáticamente actualiza las configuraciones en el directorio actual para que tengan una consistencia y legibilidad.
+
+Da formato a la configuración. Terraform mostrará los nombres de los archivos que han sido modificado. En este caso tu archivo de configuración tenía el formato correcto, por lo que Terraform no devolverá ningún nombre.
+
+```sh
+terraform fmt
+```
+
+Puedes estar seguro de que tu configuración es sintácticamente válida y consistente internamente utilizando el comando ```terraform validate```.
+
+Valida tu configuración. El ejemplo de configuración aportado es válido, por lo tanto Terraform  devolverá un mensaje de éxito. 
+
+```sh
+terraform validate
+```
+
+#### Crea la infraestructura
+Aplica la configuración con el comando ```terraform apply```. 
+
+Antes de aplicar ningún cambio, Terraform muestra el plan de ejecución que describe las acciones que Terraform realizará para actualizar la infraestructura para que coincida con la configuración.
+
+El formato de la salida es similar al formato de ```diff``` generado por herramientas como git. La salida tiene un ```+``` al lado de ```aws_instace.app_server```, lo que significa que Terraform creará este recurso. Debajo de eso muestra los atributos que se establecerán. Cuando un valor mostrado es ```(known after apply)``` significa que el valor no es conocido hasta que el recurso es creado. Por ejemplo AWS asigna los Amazon Resource Names (ARNs) a las instancias cuando las crea, por lo que Terraform no puede saber el valor del atributo ```arn``` hasta que no se apliquen los cambios y el AWS provider devuelva el valor desde la AWS API.
+
+Terraform ahora se pausa y espera ser aprobado antes de proceder. Si algo del plan parece incorrecto o  peligroso, es seguro abortar aquí antes de que Terraform modifique la infraestructura. 
+
+En este caso el plan es aceptable, por lo que es preciso confirmar con un ```yes``` para proceder. El plan de ejecución tarda un tiempo hasta que la instancia EC2 está disponible. 
+
+```sh
+  Enter a value: yes
+
+aws_instance.app_server: Creating...
+aws_instance.app_server: Still creating... [10s elapsed]
+aws_instance.app_server: Still creating... [20s elapsed]
+aws_instance.app_server: Still creating... [30s elapsed]
+aws_instance.app_server: Creation complete after 36s [id=i-01e03375ba238b384]
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+```
+
+Has creado infraestructura utilizando Terraform. Puedes visitar la consola EC2 y encontrar tu instancia. 
+
+
+
 </detail>
 ________________________________________________
 </details>

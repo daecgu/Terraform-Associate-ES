@@ -513,7 +513,87 @@ Destruye tu infrasestructura mediante el comando ```terraform destroy``` a no se
 
 </details>
 
+### [Guarda el archivo State remotamente](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/aws-remote)
+<details>
+Ahora que hemos consturido, cambiado y destruido la infraestructura de tu sistema local. Esto está bien para testing y desarrollo, pero en entornos de producción deberías tener tu archivo State seguro y encriptado, donde tus compañeros tenga acceso para colaborar en la infraestructura. El mejor modo de hacer esto es correr Terraform en un entorno remoto con acceso compartido al archivo State.
 
+[Terraform Cloud](https://cloud.hashicorp.com/products/terraform) permite a los miembros del equipo versionado, auditado y colaboración en cambios de infraestructura. Permite almaenar variables, incluidos API tokens y Access Kyes, y facilita un entorno seguro y estable para largos procesos de ejecución de Terraform. 
 
-________________________________________________
+En este tutorial migraras tu State a Terraform Cloud. 
+
+####Prerequisitos
+Este tutorial asume que has completado los anteriores. 
+
+#### Establece Terraform Cloud
+Si tienes una cuenta de HashiCorp Cloud Platform o Terraform Cloud, accede utilizando tus credenciales existentes. Para información más detalla acerca de como registrarte y crear una organización puedes revisar este [tutorial](https://developer.hashicorp.com/terraform/tutorials/cloud-get-started/cloud-sign-up)
+
+Después modifica ```main.tf``` añade al bloque ```cloud```a tu configuración Terraform y reemplaza el ```organization-name``` por el nombre de tu organización.
+
+``` terraform
+terraform {
+  cloud {
+    organization = "organization-name"
+    workspaces {
+      name = "learn-tfc-aws"
+    }
+  }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
+}
+```
+
+#### Accede a Terraform Cloud
+Accede a tu cuenta de Terraform Cloud desde el Terraform terminal mediante el comando ```terraform login```. Confirma con un ```yes``` ysigue el flujo de trabajo en la ventana del navegador que automáticamente se abrirá. Necesitaras pegar la API Key genearada en tu termina cuando se rquiera. Para más detalles puedes seguir este [tutorial](https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-login).
+
+#### Inicializa Terraform
+Ahora que has configurado tu integración con Terraform Cloud, ejecuta el comando ```terraform init``` para reinicializar tu configuración y migrar tu archivo Stat a Terraform Cloud. Introduce ```yes``` cuando se te pregunte por confirmación para la migración.
+
+Ahora que Terraform ha migrado el archivo State a Terraform Cloud, elimina el archivo State local. 
+
+```sh
+rm terraform.tfstate
+```
+ Cuando utilices Terraform Cloud con el flujo de trabajo CLI puedes elegir ejecutar Terraform remotamente o desde tu máquina local. Cuando utilizas la ejecución local, Terraform Cloud ejecutará Terraform en tu máquina y guardará remotamente el State File en Terraform Cloud. Para este tutorial utilizaremos la ejecución remota.
+
+ #### Establece variables de trabajo.
+ El comando ```terraform init``` crea el espacio de trabajo ```learn-tfc-aws``` en tu organización Terraform Cloud . Debes configurar tu espacio de trabajo con tus credenciales de AWS para autenticar el AWS provider.
+
+Navega a tu espacio de trabajo ```learn-tfc-aws``` en Terraform Cloud y ve a la página de Variables. Debes Añadir tu  ```AWS_ACCESS_KEY_ID``` y ```AWS_SECRET_ACCESS_KEY``` como variables de entorno, asegurandote de marcarlas como "sensitive".
+
+#### Aplica la configuración
+Ahora ejecuta ```terraform apply``` disparar una ejecución en Terraform Cloud. Terraform mostrará que no hay cambios para hacer.
+
+Esto significa que Terraform no ha detectado ninguna diferencia entre tu configuración y los recursos físicos existentes. Como resultado, Terraform no necesita hacer nada. 
+
+Terraform ahora guadda tu archivo State remotamente en la Terraform Cloud. Esto hace que el trabajo colaborativo sea más facile y mantiene el State y la  información secreta fuera de tu disco local. El State remote se carga en memoria únicamente cuando es utilizado.
+
+#### Destruye tu infraestructura
+Asegurate de ejecutar el comando ```terraform destroy``` para limpiar los recursos creados en este tutorial. Terraform ejecutara esto en Terraform Cloud y mostrará la salida por tu terminal. Cuando se meustre recuerda confirmar con un ```yes```.  Puedes confirmar la operación visitando tu area de trabajo en la interfaz web de Terraflorm Cloud  y confirmar la ejecución.
+
+#### Pasos Siguientes
+Esto concluye los "getting started Tutorials" de Terraform. Ahora puedes utilizar Terraform para crear y manejar tu infraestructura. Para más tutoriales prácticos con el lenguaje de configuración de Terraform, provisionamiento de recursos o importar infraestructura existente, puedes mirar los siguientes tutoriales.
+
+- [Configuration Languaje](https://developer.hashicorp.com/terraform/tutorials/configuration-language)
+- [Modules](https://developer.hashicorp.com/terraform/tutorials/modules/module)
+- [Provision](https://developer.hashicorp.com/terraform/tutorials/provision)
+- [Import](https://developer.hashicorp.com/terraform/tutorials/state/state-import)
+
+Para leer más acerca de las opciones de configuración explora la [Documentación de Terraform](https://developer.hashicorp.com/terraform/docs).
+
+##### Aprende más con Terraform Cloud
+Aunque Terraform Cloud puede almacenar el estado para admitir ejecuciones de Terraform en máquinas locales, funciona aún mejor como un entorno de ejecución remoto. Soporta dos flujos de trabajo principales para realizar ejecuciones de Terraform:
+
+- Un flujo de trabajo impulsado por VCS, en el que automáticamente pone en cola planes siempre que se comprometen cambios en el repositorio VCS de tu configuración.
+- Un flujo de trabajo impulsado por API, en el que una "pipeline" de CI u otra herramienta automatizada puede subir configuraciones directamente.
+
+Para una experiencia práctica al flujo de trabajo impulsado por VCS de Terraform Cloud, sigue los [tutoriales de inicio rapido](https://developer.hashicorp.com/terraform/tutorials/cloud-get-started). Terraform Cloud también ofrece [soluciones comerciales](https://www.hashicorp.com/products/terraform/pricing) que incluyen gestión de permisos de equipo, aplicación de políticas, agentes y más. 
+
 </details>
+
+</details>
+________________________________________________

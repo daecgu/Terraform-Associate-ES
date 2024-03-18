@@ -151,5 +151,93 @@ terraform destroy
 Ya has desplegado y destruido un servidor web NGINX con Terraform. 
 </details>
 
+### [Construye infraestructura](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/aws-build)
+<details>
+Una vez instalado Terraform ya estás preparado para crear tu primera infraestructura.
 
+En este tutorial vas a desplegar una instancia EC2 en Amazon Web Services (AWS). Las instancias EC2  son máquinas virtuales que corren en AWS. Son un componente común en muchos proyectos. 
+
+#### Prerequisitos:
+Para poder realizar este tutorial necesitarás:
+- [Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) instalado.
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) instalado.
+- [Cuenta de AWS](https://aws.amazon.com/free) y [credenciales asociadas](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html) que te permitirán crear recursos. 
+
+Para utilizar las credenciales IAM para autenticar al Terraform AWS provider, establece la variable de entorno ```AWS_ACCESS_KEY_ID``` y tu clave ```AWS_SECRECT_ACCESS_KEY```.
+
+```sh
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
+```
+
+Este tutorial utilizará recursos que estén dentro de la categorización [AWS free tier](https://aws.amazon.com/free/). Si tu cuenta no califica para los recursos gratuitos, no somos responsables de ningún cargo en el que puedas incurrir. 
+
+#### Escribe la Configuración
+El conjunto de archivos utilizado apra describir la infraestructura en Terraform se conoce como configuración Terraform (Terraform configuration). Escribirás tu primera configuración para definir una instancia AWS EC2. 
+
+Cada Configuración Terraform debe ir en su propio directorio de trabajo. Crear un directorio para tu configuración.
+```sh
+mkdir learn-terraform-aws-instance
+```
+
+Muevete al directorio:
+```sh
+cd learn-terraform-aws-instance
+```
+
+Crear un fichero para definir tu infraestructura:
+```sh
+touch main.tf
+```
+
+Abre ```main.tf``` en tu editor de texto, copia la configuración y guarda el archivo. 
+
+```terraform
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
+
+  required_version = ">= 1.2.0"
+}
+
+provider "aws" {
+  region  = "us-west-2"
+}
+
+resource "aws_instance" "app_server" {
+  ami           = "ami-830c94e3"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "ExampleAppServerInstance"
+  }
+}
+```
+Esta es una configuración completa que puedes desplegar con Terraform. Ahora explicaremos cada bloque de la configuración en más detalle.
+
+#### Bloque Terraform
+El bloque ```terraform {}``` contiene las configruaciones de Terraform, incluyendo los providers de Terraform que utilizaremos para aprovisionar la infraestructura. Para cada provider, el atributo ```source``` define un hostname, namespace y el tipo de proveedore opcionales. Terraform instala los providers del [Terraform Registry](https://registry.terraform.io/) por defecto. En este ejemplo de configuracion, el ```aws``` provider source está definido como ```hashicorp/aws```, el cual es una abreviatura de ```registry.terraform.io/hashicorp/aws```.
+
+También puedes establecer una versión para cada provider definido en el bloque ```required_provders```. El atributo ```version``` es opcional, pero se recomienda utilizarlo de manera que terrafrom no instale una version que no funcione con tu configuración. Si no especificas una versión del provider, Terraform automáticamente descargará la versión más reciente durante la inicialización. 
+
+Para aprender más dirigete a [provider source documentation](https://developer.hashicorp.com/terraform/language/providers/requirements)
+
+#### Bloque Provideres
+El bloque ```provider``` configura un provider especifico, en este caso ```aws```. Un provider es un plugin que Terraform utiliza para crear y manejar los recursos.
+
+Puedes utilizar múltiples bloques de provider en tu configuración Terrafrom apra administrar recuross de distintos providers. Puedes incluso utilizar diferrentes providers juntos. Por ejemplo, puedes pasar la IP de tu instancia AWS EC2  para monitorizar el recurso desde DataDog.
+
+#### Bloque Resources:
+Utiliza los bloques de ```resource``` para definir componentes de tu infraestructura. Un recurso puede ser un componente virtual o físico, como una instancia EC2, o puede ser un recurso lógico como una aplicación Heroku. 
+
+Los bloques de recursos tienen dos grupos de "string" antes del bloque: el tipo del recurso y el nombre del recurso. En este ejemplo, el tipo del recurso es ```aws_instance``` y el nombre es ```app_server```. El prefijo del tipo señala el nombre del provider. En la configuración e ejemplo, Terraform adminsitra el recurso ```aws_instance```  con el ```aws``` provider. Juntos, el tipo del recurso y el nombre del recurso froman un ID único para el recurso. Por ejemplo, el ID para la instancia EC2 es: ```aws_instance.app_server```.
+
+Los bloques de recurso contienen argumentos que utilizas para configurar el recurso. Argumentos pueden contener cosas como: tamaño de máquina, imágenes de Disco, VPC IDs. Nuestra [referencia de providers](https://developer.hashicorp.com/terraform/language/providers) indica los argumentos opcionales y requeridos para cada recurso. Para la instancia EC2, la configuración de ejemplo establece la AMI ID una imagen de Ubuntu, y el tipo de instancia a ```t2.micro```, que califica dentro del rango gratuito de AWS. Además establece una etiqueta para darle un nombre a la instancia. 
+
+</detail>
+________________________________________________
 </details>

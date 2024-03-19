@@ -521,7 +521,7 @@ Ahora que hemos consturido, cambiado y destruido la infraestructura de tu sistem
 
 En este tutorial migraras tu State a Terraform Cloud. 
 
-####Prerequisitos
+#### Prerequisitos
 Este tutorial asume que has completado los anteriores. 
 
 #### Establece Terraform Cloud

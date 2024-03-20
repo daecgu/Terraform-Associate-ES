@@ -718,5 +718,17 @@ terraform {
 }
 ```
 #### Características de Lenguaje Experimental
+El equipo de Terraform algunas veces introduce algunas nuevas opciones, inicial mente mediante un "opt-in experiment", de manera que la comunidad pueda probar la nueva funcionalidad y dar feedbac sobre ella antes de que se convierta en una restricción de compatibilidad hacia atrás.
+
+En versiones donde hay funcionalidades experimentales, puedes habilitarlas para cada módulo estableciendo el argumento ```experiments``` dentro de un bloque ```terraform```:
+```terraform
+```terraform {
+  experiments = [example]
+}
+```
+
+Los experimentos son sujetos de cambios arbitrarios en versionas futuras, dpenediendo del resultado del experimento, pueden cambiar drásticamente antes de la versión final o pueden no publicarse de una forma estable. Estos cambios pueden aparecer incluso en versiones menores y "patch releases". No recomendamos utilizar funcionalidades experimentales en módulos de Terraform que están dirigidos a Producción.
+
+
 
 </details>

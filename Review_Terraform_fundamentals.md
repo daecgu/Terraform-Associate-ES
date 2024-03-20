@@ -729,6 +729,13 @@ En versiones donde hay funcionalidades experimentales, puedes habilitarlas para 
 
 Los experimentos son sujetos de cambios arbitrarios en versionas futuras, dpenediendo del resultado del experimento, pueden cambiar drásticamente antes de la versión final o pueden no publicarse de una forma estable. Estos cambios pueden aparecer incluso en versiones menores y "patch releases". No recomendamos utilizar funcionalidades experimentales en módulos de Terraform que están dirigidos a Producción.
 
+Para hacer esto explícito y evitar llamadas a módulos que dependan de una característica experimental, cualquier módulo con experimentos habilitados generará un aviso en cada ejecución de ```terraform plan``` o ```terraform apply```. Si quieres intentar utilizar características experimentales en módulos compartidos, te recomendamos habilitar el experimento solo en publicaciones alfa o beta del módulo.
+
+La introudción y finalización de experimentos se informa en el [Changelog de Terraform](https://github.com/hashicorp/terraform/blob/main/CHANGELOG.md), de manera que puedas consultar las notas de la versión para descubrir qué palabras clave de experimento, si las hay, están disponibles en una versión particular de Terraform.
+
+#### Enviar metadatos a Providers
+El bloque ```terraform``` puede tener anidado el bloque ```provider_meta``` para cada provider que un módulo está usando, si el provider define en esquema para el mismo. esto permite al provider recibir información específica del módulo, está destinado principalmente para módulos distribuidos por el mismo vendedor que el proveedor asociado. Para más información, [Provider Metadata](https://developer.hashicorp.com/terraform/internals/provider-meta).
+
 
 
 </details>

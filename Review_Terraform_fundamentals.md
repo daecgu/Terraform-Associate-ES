@@ -597,3 +597,23 @@ Para una experiencia práctica al flujo de trabajo impulsado por VCS de Terrafor
 
 </details>
 ________________________________________________
+
+### [Proposito del State de Terraform](https://developer.hashicorp.com/terraform/language/state/purpose)
+
+El fichero State es un requisito necesario para que Terraform funcione. A menudo se pregunta si es posible que Terraform trabaje sin State, o que Terraform no use State y simplemente inspeccione los recursos del mundo real en cada ejecución. Esta página ayudará a explicar por qué se requiere el estado de Terraform.
+
+En los escenarios donde Terraform podría prescindir del State, hacerlo requeriría trasladar grandes cantidades de complejidad de un lugar (el State) a otro lugar (el concepto de reemplazo).
+
+#### Mapear la realidad
+Terraform requiere algún tipo de base de datos para mapear la configuración de Terraform al mundo real. Por ejemplo, cuando tienes un recurso ```resource "aws_instance" "foo"``` en tu configuración, Terraform utiliza este mapeo para saber que el recurso ```resource "aws_instance" "foo"``` representa un objeto real con el ID de instancia ```i-abcd1234``` en un sistema remoto.
+
+Para algunos proveedores como AWS, Terraform teóricamente podría usar algo como las etiquetas de AWS. Los prototipos iniciales de Terraform en realidad no tenían archivos State y usaban este método. Pero rápidamente se encontarron problemas. El primer problema importante fue simple: no todos los recursos admiten etiquetas y no todos los proveedores de nube admiten etiquetas.
+
+Por lo tanto, para el mapeo de la configuración a los recursos en el mundo real, Terraform utiliza su propia estructura de estado.
+
+Terraform espera que cada objeto remoto esté vinculado solo a una instancia de recurso en la configuración. Si un objeto remoto está vinculado a múltiples instancias de recurso, el mapeo de la configuración al objeto remoto en el estado se vuelve ambiguo y Terraform puede comportarse de manera inesperada. Terraform puede garantizar un mapeo uno a uno cuando crea objetos y registra sus identidades en el estado. Al importar objetos creados fuera de Terraform, debes asegurarte de que cada objeto distinto se importe solo a una instancia de recurso.
+
+#### Metadatos 
+
+
+

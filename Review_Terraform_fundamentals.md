@@ -690,8 +690,33 @@ terraform {
 #### Configura un Terraform Backend
 El bloque anidado ```backend``` configura el State Backend que Terraform debe utilizar. La sintaxis y el comportamiento del bloque ```backend``` se describe en [Backend Configuration](https://developer.hashicorp.com/terraform/language/settings/backends/configuration)
 
+#### Especifica un versión requerida de Terraform
 
+Ejemplo prácticos: intenta realizar el [Manage Terraform Versions](https://developer.hashicorp.com/terraform/tutorials/configuration-language/versions) o [Manage Terraform Versions in Terraform Cloud](https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-versions)
 
+La configuración ```required_version``` acepta un argumento de [restricción de versión](https://developer.hashicorp.com/terraform/language/expressions/version-constraints), que especifica qué versiones de Terraform se pueden usar con tu configuración.
 
+Si la versión de Terraform no coincide con las restricciones especificiadas, Terraform emiitrá un error sin ejecutar ninguna otra acción. 
+
+Cuando usas "[child modules](https://developer.hashicorp.com/terraform/language/modules)", cada módulo puede especifica su propios requerimientos de version. Los requerimientos de todos los módulos en el árbol deben ser satisfechos.
+
+Utiliza requerimientos de version en un entorno colaborativo para asegurarte que todo el mundo utiliza una versión específica de Terraform, o al menos una versión que tenga el comportamiento esperado para esa configuración.
+
+La configuración ```required_version```  aplica solo a la versión de Terraform CLI. Los tipos de recursos de Terraform son implementados por plugins de proveedores, cuyos ciclos de lanzamiento son independientes de Terraform CLI y entre sí. Utiliza el bloque ```required_providers``` para gestionar las veriones específicas para cada provider.
+
+#### Especificar Provider Requirements
+El bloque ```required_providers``` especifica todos los providers requeridos por el módulo actual, mapeando cada provider a una dirección de origen y una restricción de versión.
+
+```terraform
+terraform {
+  required_providers {
+    aws = {
+      version = ">= 2.7.0"
+      source = "hashicorp/aws"
+    }
+  }
+}
+```
+#### Características de Lenguaje Experimental
 
 </details>

@@ -639,3 +639,59 @@ En la configuración predeterminada, Terraform almacena el archivo State en el d
 El [State remoto](https://developer.hashicorp.com/terraform/language/state/remote) es la solución recomendada a este problema. Con un backend de estado completamente equipado, Terraform puede utilizar el bloqueo remoto como medida para evitar que dos o más usuarios diferentes ejecuten Terraform al mismo tiempo, y así asegurar que cada ejecución de Terraform comience con el State más recientemente.
 
 </details>
+
+### [Ajustes de Terraform](https://developer.hashicorp.com/terraform/language/settings)
+<details>
+
+El bloque de ajustes especial ```terraform``` se usa para configurar algunos comporateminetos del mismo Terraform, como por ejemplo requerir una versión mínima de terraform para aplicar tu configuración.
+
+#### Sintaxis del bloque Terraform
+Los ajustes de Terraform se agrupan dentro del bloque ```terraform```:
+
+```terraform
+terraform {
+  # ...
+}
+```
+
+Cada bloque ```terraform``` puede contener un número de ajustes relacionadas al comportamiento de Terraform. Dentro de este bloque únicamente se pueden usar valores constantes; los argumentos no pueden referirse a objetos nombrados como recursos, variables de entrada, etc. y no pueden usar ninguna de las funciones incorporadas del lenguaje de Terraform.
+
+Las distintas opciones soportadas dentro de un bloque ```terraform``` son descritas a continuación.
+
+#### Configurando Terraform Cloud
+El bloque anidado ```cloud``` configura Terraform Cloud para habilitar su "[CLI-driven run workflow](https://developer.hashicorp.com/terraform/cloud-docs/run/cli)"
+- Dirigete a [Terraform Cloud Configuration](https://developer.hashicorp.com/terraform/language/settings/terraform-cloud) para un resumen de la sintaxis del bloque ```cloud```.
+#### Traducción de la página Terraform Cloud configuration:
+<details>
+Solo necesitas configurar estos ajustes cuando quieras utilizar Terraform CLI para interactuar con Terraform Cloud. Terraform Cloud ignora estos cuando interactura con Terraform a través de un control de versiones o la API.
+
+##### Ejemplo de uso
+Para configurar el Terraform Cloud CLI integration, añade un bloque anidado ```cloud``` dentro del bloque ```terraform```. No puedes utilizar el CLI y un [State Backend](https://developer.hashicorp.com/terraform/language/settings/backends/configuration) en la misma configuración. 
+
+```terraform
+terraform {
+  cloud {
+    organization = "example_corp"
+    ## Required for Terraform Enterprise; Defaults to app.terraform.io for Terraform Cloud
+    hostname = "app.terraform.io"
+
+    workspaces {
+      tags = ["app"]
+    }
+  }
+}
+```
+
+</details>
+- Dirigete a [Using Terraform Cloud](https://developer.hashicorp.com/terraform/cli/cloud) en la documentación deTerraform CLI para más detalles acerca de cómo inicializar y configurar el Terraform Cloud CLI integration.  
+
+[Settings](https://developer.hashicorp.com/terraform/cli/cloud/settings) [Initializing and migrating](https://developer.hashicorp.com/terraform/cli/cloud/settings) [Command Line Arguments](https://developer.hashicorp.com/terraform/cli/cloud/command-line-arguments)
+
+#### Configura un Terraform Backend
+El bloque anidado ```backend``` configura el State Backend que Terraform debe utilizar. La sintaxis y el comportamiento del bloque ```backend``` se describe en [Backend Configuration](https://developer.hashicorp.com/terraform/language/settings/backends/configuration)
+
+
+
+
+
+</details>

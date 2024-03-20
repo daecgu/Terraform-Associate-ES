@@ -599,7 +599,7 @@ Para una experiencia práctica al flujo de trabajo impulsado por VCS de Terrafor
 ________________________________________________
 
 ### [Proposito del State de Terraform](https://developer.hashicorp.com/terraform/language/state/purpose)
-
+<details>
 El fichero State es un requisito necesario para que Terraform funcione. A menudo se pregunta si es posible que Terraform trabaje sin State, o que Terraform no use State y simplemente inspeccione los recursos del mundo real en cada ejecución. Esta página ayudará a explicar por qué se requiere el estado de Terraform.
 
 En los escenarios donde Terraform podría prescindir del State, hacerlo requeriría trasladar grandes cantidades de complejidad de un lugar (el State) a otro lugar (el concepto de reemplazo).
@@ -614,6 +614,28 @@ Por lo tanto, para el mapeo de la configuración a los recursos en el mundo real
 Terraform espera que cada objeto remoto esté vinculado solo a una instancia de recurso en la configuración. Si un objeto remoto está vinculado a múltiples instancias de recurso, el mapeo de la configuración al objeto remoto en el estado se vuelve ambiguo y Terraform puede comportarse de manera inesperada. Terraform puede garantizar un mapeo uno a uno cuando crea objetos y registra sus identidades en el estado. Al importar objetos creados fuera de Terraform, debes asegurarte de que cada objeto distinto se importe solo a una instancia de recurso.
 
 #### Metadatos 
+Terraform también debe rastrear metadatos como las dependencias de recursos.
 
+Terraform usa habitualmente la configuración para determinar el orden de dependencia. Sin embargo, cuando eliminas un recurso de una configuración de Terraform, Terraform debe saber cómo eliminar ese recurso del sistema remoto. Terraform puede ver que existe un mapeo en el archivo State para un recurso que no está en tu configuración y planificar su destrucción. Sin embargo, dado que la configuración ya no existe, el orden no se puede determinar únicamente a partir de la configuración.
 
+Para asegurar una operación correcta, Terraform retiene una copia del conjunto más reciente de dependencias dentro del State. Ahora, Terraform todavía puede determinar el orden correcto para la destrucción a partir del estado cuando eliminas uno o más elementos de la configuración.
 
+Una manera de evitar esto sería que Terraform conociera un orden requerido entre tipos de recursos. Por ejemplo, Terraform podría saber que los servidores deben eliminarse antes que las subredes de las que forman parte. Sin embargo, la complejidad de este enfoque aumenta rápidamente: además de que Terraform debe comprender la semántica de ordenamiento de cada recurso para cada proveedor, también debe entender el ordenamiento entre proveedores.
+
+Terraform también almacena otros metadatos por razones similares, como un puntero a la configuración del proveedor que se utilizó más recientemente con el recurso en situaciones donde hay presentes múltiples proveedores con alias.
+
+#### Rendimiento
+Además del mapeo básico, Terraform almacena un caché de los valores de los atributos para todos los recursos en State. Esta es la característica más opcional del State de Terraform y se realiza únicamente con el objetivo de mejorar el rendimiento.
+
+Al ejecutar ```terraform plan```, Terraform debe conocer el estado actual de los recursos para determinar los cambios que necesita hacer para alcanzar la configuración deseada.
+
+Para infraestructuras pequeñas, Terraform puede consultar a los proveedores y sincronizar los últimos atributos de todos tus recursos. Este es el comportamiento predeterminado de Terraform: para cada plan y aplicación, Terraform sincronizará todos los recursos en tu State.
+
+Para infraestructuras más grandes, consultar cada recurso es muy lento. Muchos proveedores cloud no proporcionan APIs para consultar múltiples recursos a la vez, y el tiempo de ida y vuelta para cada recurso es de cientos de milisegundos. Además de esto, los proveedores cloud casi siempre tienen limitación de tasa de API, por lo que Terraform solo puede solicitar un cierto número de recursos en un período de tiempo. Los usuarios más grandes de Terraform hacen un uso intensivo de la opción ```-refresh=false``` así como de ```-target``` para sortear esto. En estos escenarios, el estado en caché se trata como el registro de la verdad.En la configuración predeterminada, Terraform almacena el estado en un archivo en el directorio de trabajo actual donde se ejecutó Terraform. Esto está bien para comenzar, pero cuando se usa Terraform en un equipo, es importante que todos trabajen con el mismo estado para que las operaciones se apliquen a los mismos objetos remotos.
+
+#### Sincronización
+En la configuración predeterminada, Terraform almacena el archivo State en el directorio de trabajo actual donde se ejecutó Terraform. Está bien para comenzar, pero cuando se usa Terraform en equipo, es importante que todos trabajen con el mismo State para que las operaciones se apliquen a los mismos objetos remotos.
+
+El [State remoto](https://developer.hashicorp.com/terraform/language/state/remote) es la solución recomendada a este problema. Con un backend de estado completamente equipado, Terraform puede utilizar el bloqueo remoto como medida para evitar que dos o más usuarios diferentes ejecuten Terraform al mismo tiempo, y así asegurar que cada ejecución de Terraform comience con el State más recientemente.
+
+</details>

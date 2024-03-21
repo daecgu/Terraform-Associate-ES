@@ -15,7 +15,7 @@ Todos los recursos de cada apartado los encontrarás en el link del título este
 Terraform es una herramienta que permite definir infraestructura en código legible tanto por personas como por máquinas. Revisa los siguientes recursos para comenzar a aprender las ventas de la Infraestructura como código (IaC), y las ventajas de Terraform.
 Los recursos que encuentras en este apartado cubren los objetivos 1 y 2 de la certificación. 
 
-## [Fundamentos de Terraform](Review_Terraform_fundamentals.md) (3/9)
+## [Fundamentos de Terraform](Review_Terraform_fundamentals.md) (5/9)
 Completa los tutoriales ["Get Started"](https://developer.hashicorp.com/terraform/tutorials/aws-get-started) para crear modificar y destruir tu primera infraestructura utilizando Terraform y aprender acerca de los Terraform providers y los conceptos básicos de Terraform state.
 
 Esta sección cubre el objetivo 3: Terraform Basics.

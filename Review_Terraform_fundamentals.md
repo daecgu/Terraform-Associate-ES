@@ -804,7 +804,38 @@ en ```main.tf```, cambia ```0.12.29``` con tu versión actual de Terraform, que 
  }
 ```
 
-Ahora inicializa tu configuración mediante el comando ```terraform init```.
+Ahora inicializa tu configuración mediante el comando ```terraform init```. 
+Una vez inicializado, aplica esta configuración con el comando ```terraform apply``` para crear la infraestructura de ejemplo. Recuerda responder a la pregunta acerca de confirmación con un ```yes```.
+
+#### Inspecciona el archivo Satate de Terraform
+Cuando ejecutas comandos Terraform, Terraform guarda su versión actual en tu archivo de proyecto State, junto con la versión de formato del State. Como TErraform guarda este archivo State como texto, puedes inspeccionarlo para determinar qué version de Terraform lo ha generado. 
+
+```sh
+grep -e '"version"' -e '"terraform_version"' terraform.tfstate
+```
+
+Si tu sistema no tiene el comando ```grep```, puedes abrir el archivo ```terraform.tfstate``` en tu editor de texto para mirar los valores de ```version``` y de ```terraform_version``` cerca del principio del archivo.
+
+Terraform únicamente actualizará ```version``` en el archivo State cuando una nueva versión de Terraform requiera un cambio en el formato del archivo State. Terraform actualizará la ```terraform_version``` cada vez que apiques un cambio a tu configuración utilizando una versión más reciente de Terraform. 
+
+En general, Terraform continuará el trabajo con un archivo State a lo largo de las actualizaciones de las versiones menores. Cuando se publican major o minor, Terraform actualizará la versión del archivo State si es necesario, y dará un error si intentas correr una versión más antigua de Terraform utilizando una versión no soportada del archivo State. 
+
+Si ibas a intentar aplicar esta configuración utilizando una versión más antigua de Terraform que no soporta la versión actual del archivo State, Terraform devuelve un ```state lock error``` y muestra qué versión sería necesaria. 
+
+Una vez que utilizas una versión más actualizada del archivo State en un proyecto, no hay forma de revertir a una versión más antigua del archivo State. 
+
+Terraform manjea de forma independiente las versiones de los provider de la versión de Terraform en sí mismo. Algunas veces una versión más antigua de un provider no funcionará con una nueva versión de Terraform. Cuando actualizas Terraform, revisa las versiones de tus provider y considera actualizarlas también. Realiza nuestro tutorial acerca de [bloquear y actualizar las versiones de los provider](https://developer.hashicorp.com/terraform/tutorials/configuration-language/provider-versioning) para aprender a manejar las versiones de los provider. 
+
+#### Restricciones de las versiones de Terraform.
+
+La siguiente tabla resume algunos de los caminos posibles en los quep uedes indicar al versión de Terraform en el ajuste ```required_version```.  Asumiendo que tienes Terraform v0.15.0 como tu versión actual objetivo. Dirigete a [Terraform Docuementation](https://developer.hashicorp.com/terraform/language/expressions/version-constraints) para una explicación detallada de las restricciones de la versión. 
+
+| Required Version | Significado | Consideraciones |
+|--------------|--------------|--------------|
+|  ```0.15.0``` | Solo Terraform v0.15.0  | Para actualizar Terraform, primero edita la configuración ```required_version```  |
+| ```>= 0.15```  | Cualquier version de Terraform v0.15.0 o superior | Incluye Terraform v1.0.0 y superiores  |
+| ``` ~> 0.15.0 ```  | Cualquier versión de Terraform v0.15.x, pero no v1.0 o superior | Las versiones menores están pensadas para no ser disruptivas  |
+| ``` <= 0.15, <2.0.0```  | Terraform v0.15.0 o superior, pero inferior que v2.0.0 | Evita actualizaciones major superiores |
 
 
 </details>

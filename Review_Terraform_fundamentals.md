@@ -837,5 +837,18 @@ La siguiente tabla resume algunos de los caminos posibles en los quep uedes indi
 | ``` ~> 0.15.0 ```  | Cualquier versión de Terraform v0.15.x, pero no v1.0 o superior | Las versiones menores están pensadas para no ser disruptivas  |
 | ``` <= 0.15, <2.0.0```  | Terraform v0.15.0 o superior, pero inferior que v2.0.0 | Evita actualizaciones major superiores |
 
+En general, animamos a usar la última versión disponible de Terraform para tener todas las ventajas de las nuevas funciones y la ressolución de bugs. En cualqueir caso, no es necesario actualizar tu proyecto de Terraform a la última versión cada vez que utilizas Terraform, a menos que necesites una característica especifica o que se haya solucionado un bug. 
+
+Como una buena práctica, considera utilizar ```~>``` para mantener tu version major y minor de Terraform. Esto permitirá que tu y tu equipo utiliceis los parches de actualización sin tener que actualizar tu configuración de Terraform. Entonces puedes planear cuando quieres actualizar tu configuración y usar una nueva versión de Terraform, y revisara detenidamente los cambios para asegurar que tu proyecto siga funcionando como se espera.
+
+Por ejmplo, si escribes tu configuración Terraform utilizando 1.0.0, y añades ```required_version = "~> 1.0.0"``` a tu bloque ```terraform { }```. Esto te permitira que tu y tu equipo utiliceis Terraform ```1.0.x```, pero necesitarás actualizar tu configuración de Terraform para ```1.1.0``` o superior.
+
+#### Limpia tu infraestructura
+Destruye la infraestructura creada en este tutorial mediante el comando ```terraform destroy```, recuerda responder a al petición de confirmación con un ```yes```.
+
+#### Siguientes pasos
+Ahora que eres capaz de manejar versiones de Terraform utilizando Terraform CLI. Cuando utilices Terraform en producción, te recomendamos que tu y tu equipo tengas planes y procedimientos para determinar cómo administrar las versiones de Terraform y gestionar actualizaciones. 
+
+Terraform Cloud y Terrafor Enterprise incluyen características que ayudan a que el equipo trabaje conjuntamente en los proyectos Terraform, como proveer un entorno de ejecucion administrado por Terraform y soporte para equipos y permisos. Cuando usas Terraform Cloud o Terraform Enterprise, puedes configurar cada espacio de trabajo para usar cualquiera de las versiones de Terraform qu especifiques. 
 
 </details>

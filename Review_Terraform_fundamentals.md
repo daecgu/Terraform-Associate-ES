@@ -596,7 +596,6 @@ Para una experiencia práctica al flujo de trabajo impulsado por VCS de Terrafor
 </details>
 
 </details>
-________________________________________________
 
 ### [Proposito del State de Terraform](https://developer.hashicorp.com/terraform/language/state/purpose)
 <details>
@@ -736,6 +735,76 @@ La introudción y finalización de experimentos se informa en el [Changelog de T
 #### Enviar metadatos a Providers
 El bloque ```terraform``` puede tener anidado el bloque ```provider_meta``` para cada provider que un módulo está usando, si el provider define en esquema para el mismo. esto permite al provider recibir información específica del módulo, está destinado principalmente para módulos distribuidos por el mismo vendedor que el proveedor asociado. Para más información, [Provider Metadata](https://developer.hashicorp.com/terraform/internals/provider-meta).
 
+</details>
+
+### [Administra las  versiones de Terraform](https://developer.hashicorp.com/terraform/tutorials/configuration-language/versions)
+<details>
+
+HashiCorp activamente desarrolla y mantiene Terraform. Para acceder a neuvas características de Terraform deberás actualizar la versión de Terraform que usas en tu configuración. Establece ```required_version``` para controlar la versión de terraform que tus configuraciones utilizan y realizar actualizaciones predecibles.
+
+En este tuotiral, actualizarás una configuración existente a una versión actualizada de Terraform y aprenderas a administrar diferentes veriones de terraform con un equipo. 
+
+#### prerequisitos
+Para completar este tutorial necesitarás:
+- Tener instalado localmente Terraform CLI versión 0.15 o superior.
+- Una cuenta de AWS.
+- Tus credencias AWS configuradas localmente
+- [Git CLI](https://git-scm.com/downloads)
+
+#### Clona el respositorio de ejemplo:
+```
+git clone https://github.com/hashicorp/learn-terraform-versions.git
+```
+Cambia de directorio de trabajo:
+```sh
+cd learn-terraform-versions
+```
+
+Este repositorio contiene una configuración completa de Terraform que despliega un ejemplo de una aplicación web en AWS. En cualquier caso, esta configuración utiliza una versión antigua de Terraform. Tendrás que actualizarla para utilizar una versión más reciente de Terraform. 
+
+#### Revisa la configuración de ejemplo
+Abre ```main.tf``` y encuentra el bloque ```terraform```.
+
+```terraform
+terraform {
+  required_providers {
+    aws = {
+      version = "~> 2.13.0"
+    }
+    random = {
+      version = ">= 2.1.2"
+    }
+  }
+
+  required_version = "~> 0.12.29"
+}
+```
+Esta configuración establece ```required_version``` a ```~>0.12.29```.  El simbolo ```~>``` permite que la versión de "patch" sea superior a 29 pero requiere que la versión mayor y menor (```0.12```) coincida con la configuración especificada. Terraform mandará un error si intentas utilizar esta configuración con una más reciente que ```0.12.x```, porque tiene la configuración ```required_version```.
+
+Utiliza el subcomando ```version``` para comprobar qué versión de Terraform tienes instalado y la versión de cualquier provider que esté utilizando tu configuración. 
+```sh
+terraform version
+```
+
+Terraform  te permitirá saber si hay alguna versión actualizada disponible.
+
+Intenta inicializar el proyecto con ```terraform init```. Terraform mostrará un error indicnado que tu versión local es muy nueva para esta restricción de versión ```required_version```.
+
+HashiCorp Utiliza el formato ```major.mino.patch``` para las versiones de TErraform. HashiCorp actualiza Terraform Frecuentemente, por lo que es común utilizar configuraciones escritas para una versión más antigua de Terraform. Las nuevas versiones ```minor``` y ```patch``` de Terraform son compatibles hacia atrás escritars por versiones previas. Por esto, puedes actualizar a una nueva versión menor de Terraform y mantener tus configuraciones existentes. En cualquier caso, actualizar tu versión de Terraform puede tener otras consecuencias, como actualizar la versión de tus ```providers```. Algunas actualizaciones e versiones pueden actualizar la versión de tu archivo State o requerir editar el archivo de configuración para implementar nuevas características. Utiliza el ajuste ```required_version```  para controlar con qué versión de Terraform trabajaras con tus configuraciones y asegurar que las actualizaciones de infraestuctura sean seguras y predecibles. 
+
+en ```main.tf```, cambia ```0.12.29``` con tu versión actual de Terraform, que ha sido mostrada por pantalla cuando ejecutaste el comando ```terraform version```. Asegurate de cuardar este archivo. Asegurate de guardar el archivo.
+
+```diff
+   required_providers {
+## ...
+   }
+
+-  required_version = "~> 0.12.29"
++  required_version = "~> <TERRAFORM VERSION>"
+ }
+```
+
+Ahora inicializa tu configuración mediante el comando ```terraform init```.
 
 
 </details>

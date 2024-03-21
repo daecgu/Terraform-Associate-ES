@@ -852,3 +852,62 @@ Ahora que eres capaz de manejar versiones de Terraform utilizando Terraform CLI.
 Terraform Cloud y Terrafor Enterprise incluyen características que ayudan a que el equipo trabaje conjuntamente en los proyectos Terraform, como proveer un entorno de ejecucion administrado por Terraform y soporte para equipos y permisos. Cuando usas Terraform Cloud o Terraform Enterprise, puedes configurar cada espacio de trabajo para usar cualquiera de las versiones de Terraform qu especifiques. 
 
 </details>
+
+
+### [Resumen acerca de Providers](https://developer.hashicorp.com/terraform/language/providers)
+<details>
+Terraform confía en plugins llamados providers para interactuar con los provedores Cloud, SaaS y otras APIs.
+
+Las configuraciones Terraform deben declarar qué prividers requieren para que Terraform pueda instalarlas y usarlas. Adicionalmente, algunos proveedores require configuración (por ejemplo endpoints URLs o regiones Cloud) antes de ser utilizadas.
+
+#### ¿Qué hacen los Providers?
+Cada provider añade un conjunto de [tipos de recursos](https://developer.hashicorp.com/terraform/language/resources) y/o [fuentes de datos](https://developer.hashicorp.com/terraform/language/data-sources) que Terraform puede gestionar. 
+
+Cada tipo de recurso es implementado por un provider, sin providers Terraform no puede manjear ningún tipo de inraestructura. 
+
+La mayorái de provideres configuran una plataforma específica de infraestructura (ya sea Cloud o local). Los providers pueden ofrecer utilidades locales para tareas como generar números aleatorios para nombres únicos de recursos.
+
+#### ¿De dónde proceden los Providers?
+Los providers son distribuidos de forma separada a Terraform, cada provider tiene sus propios ciclos de publicación y numeros de versión. El [registro de Terraform](https://registry.terraform.io/browse/providers) es principal directorio público disponible de Terraform providers para la mayoría de plataformas de infraestuctura. 
+
+#### Documentación de los Provider
+Cada provider tiene su propia documentación, describe los tipos de recursos y sus argumentos. 
+
+El registro Terraform,incluye documentación para un gran rango de providers desarrollados por HashiCorp, "thid-party vendors", y la comunidad de Terraform. Utiliza el link "Documentation" en el encabezado de un proveedor para navegar en su documentación. 
+
+La documentación de los Provider está versionada, puedes usar el menu versión en el encabezado para cambiar qué versión quieres ver. 
+
+Para detalles acerca de escribir, generar y ver la documentación del provedor, puedes ver [provider publishing documentation](https://developer.hashicorp.com/terraform/registry/providers/docs).
+
+
+#### Cómo utilizar Providers
+Los providers son publicados de forma separada a Terraform  y tienen su propios números de versión. En producción recomendamos restringir las versiones aceptables de providers en el bloque de configuración de providers requirements., apra estar seguros de que terraform init no instalará versiones actualizadas del proveedor que sean incompatibles con la configuración.
+
+Para usar recursos de un provider dado, necesitas incluir alguan información acerca de él en tu configuración. Mira las siguientes páginas para entrar en detalle:
+- [Provider Requirements](https://developer.hashicorp.com/terraform/language/providers/requirements) documenta cómo se declaran los providers de manera que terraform pueda instalarlos.
+- [Provider Configuration](https://developer.hashicorp.com/terraform/language/providers/configuration) doucmenta cómo se configuran las opcioens para los providers.
+- [Dependency Lock File](https://developer.hashicorp.com/terraform/language/files/dependency-lock)documenta un archivo adicional HCL que puede incluir una configuración que indica a Terraform que utilice siempre un conjunto específico de Provider Versions.
+
+#### Instalación de Provider
+- Terraform Cloud y Terraform Enterprise instalan los providers como parte de cada ejecución.
+- Terraform CLI encuentra e instala los providers cuando inicializa el directorio de Trabajo. Puede Automáticamente descargar providers de un registro Terraform o cargarlos desde cache o un "local mirror". Si estás usando un directorio de trabajo persistente, debes reinicializar cuando cambies la configuración de los providers.
+
+Para ahorrar tiempo y ancho de banda, Terraform CLI soporta un plugin opcional de cache. Puedes habilitar la cache utilizando el ```plugin_cache_dir``` estableciendo en el [Archivo de configuruación de CLI](https://developer.hashicorp.com/terraform/cli/config/config-file).
+
+Para asegurar que Terraform siempre instala la misma versión de provider para una determinada confiugración, puedes usar TErraform CLI para crear un archivo "lock" de dependencias y llevarlo al sistema de control de versiones con tu configuraicón. Si un archivo "lock" está presente, Terraform Cloud, CLI, y Entrerpiese le obedecerán cuando instalen los providers.
+
+#### Cómo encontrar Providers
+Algunos providers en el Registro de Providers son desarrollados y publicados por HashiCorp, algon son publicados por mantenedores de las plataformas, y otros son publicados por usuarios y voluntarios. Los providers utilizan las siguientes placas para indicar quién las desarrolla y mantiene.
+
+| Tier|	Description	| Namespace |
+|--------------|--------------|--------------|
+| Official | Official providers are owned and maintained by HashiCorp |	hashicorp |
+|Partner |Partner providers are written, maintained, validated and published by third-party companies against their own APIs. To earn a partner provider badge the partner must participate in the |HashiCorp Technology Partner Program.| Third-party organization, e.g. mongodb/mongodbatlas |
+|Community |Community providers are published to the Terraform Registry by individual maintainers, groups of maintainers, or other members of the Terraform community.|	Maintainer’s individual or organization account, e.g. DeviaVir/gsuite |
+|Archived | Archived Providers are Official or Partner Providers that are no longer maintained by HashiCorp or the community. This may occur if an API is deprecated or interest was low. | hashicorp or third-party |
+
+#### ¿Cómo desarrollar Providers?
+Providers están escritos en Go, utilizando el plugin Terraform SDK. Para más inforamción: [Plugin Development documentation](https://developer.hashicorp.com/terraform/plugin), [Call APIs with Terraform Privders](https://developer.hashicorp.com/terraform/tutorials/providers-plugin-framework?utm_source=WEBSITE&utm_medium=WEB_IO&utm_offer=ARTICLE_PAGE&utm_content=DOCS).
+
+</details>
+

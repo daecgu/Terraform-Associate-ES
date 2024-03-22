@@ -911,7 +911,8 @@ Providers están escritos en Go, utilizando el plugin Terraform SDK. Para más i
 
 </details>
 
-### Cómo trabaja Terraform con Plugins
+### [Cómo trabaja Terraform con Plugins](https://developer.hashicorp.com/terraform/plugin/how-terraform-works)
+<details>
 Terraform es una herramienta para consturir, cambiar y versionar infraestructura de forma segura y eficiente. TErraform se construye en una arquitectura basada en plugins, permitiendo a desarrolladores ampliar TErraform escribiendo nuevos plugins o compilando versiones modificadas de los existentes. 
 
 Terraform está dividido lógicamente en dos partes principales: Nucleo de Terraform (Terraform core) y Terraform Plugins. El núcleo de Terraform utiliza llamadas a procedimientos remotos (RPC) para comunicarse con los Plugins de Terraform, y ofrece muchos caminos para descubrir y cargar los plugins a utilizar. Los plugins de terraform exponen una implementación para un servicio específico, como AWS, o un provisioner, como Bash. 
@@ -940,7 +941,26 @@ Lo terraform Plugins son los responsables de la implementación especifica de do
 ##### Responsabilidades de Provisioner Plugins:
 - Ejecutar comandos o scripts en el recurso designado después de la creación o en la destrucción.
 
-####
+#### Discovery
+!! Tema Avanzado: Esta sección describe cómo son descubiertos los Terraform Plugin a un nivel de detalle que un desarrollador de plugin debe saber.
+
+Cuando ```terraform init``` se ejecuta, Terraform lee los arhicovs de configuración en el directorio de trabajo para determinar que plugins son necesarios, busca los plugins instalados en distintas localizaciones, otras veces descarga plugins adicionales, decide qué versión debe utilizar y escribe a "lock file" para sasegurar que Terraform utilizará siempre la misma versión de plugin en este directorio hasta que se ejecute nuevamente ```terraform init```.
+
+#### Localizaciones de plugins. 
+La [doucmentación de Terraform CLI](https://developer.hashicorp.com/terraform/cli/config/config-file#provider-installation) tiene actualizada y detallada información acerca de dónde Terraform busca los binarios de los plugins como parte de ```terraform init```. Consulta esa documentación para saber [información de dónde situar los binarios durante desarrollo](https://developer.hashicorp.com/terraform/cli/config/config-file#development-overrides-for-provider-developers).
+
+#### Selección de Plugins
+Despues de localizar cualquier plugin instalado, ```terraform init``` los compara a las restricciones de la configuración y elige una versión para cada plugin de la siguiente manera:
+- Si hay versiones que cumplen los requisitos, Terraform utiliza la versión más reciente que cumpla las restricciones (incluso si el registro de terraform tiene una versión más nueva que sea aceptable).
+- Si no hay versionas aceptables instaladas y el plugin es uno de los Providers distribuidos por HashiCorp, Terraform descarga la versión más reciente aceptable del Registro de terraform y la guradda en el subdirectorio ```.terraform/providers/```.
+- Si no hay versiones aceptables instaladas y el plugin no es distribuido en el registro de Terraform, la inicialización falla y el usuario debe instalar manualmente la versión apropiada.
+
+#### Actualizar Plugins
+Cuando ejecutamos ```terraform init``` on la opción ```-upgrade```, vuelve a comprobar el Registro de Terraform por una versión más reciente aceptable y la descarga si está disponible.
+
+Este comportamiento solo aplica a providers cuyas versiones aceptables se encuentra únicamente en los subdirectiorios correctos bajo ```.terraform/providers/``` (el directorio de descarga automática); si cualquier versión aceptable de un provider está instalada en cualqueir otro sitio, ```terraform init -upgrade``` no descargará una nueva versión del mismo. 
+
+</details>
 
 
 

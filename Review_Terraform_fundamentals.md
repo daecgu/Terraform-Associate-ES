@@ -964,6 +964,111 @@ Este comportamiento solo aplica a providers cuyas versiones aceptables se encuen
 
 </details>
 
+### [Configuracion de Provider](https://developer.hashicorp.com/terraform/language/providers/configuration)
+<details>
+Los provider permiten a Terraform interactuar con proveedores Cloud, Saas, y otras APIs.
+
+Algunos provideres requieren que configures mediante endpoint URLs, regiones Cloud y otros ajustes antes de que Terraform los pueda utilizar. Esta página documenta cómo configurar los ajustes de providers.
+
+Adicionalmente, todas las configuraciones Terraform deben declarar qué provider necesitan para que Terraform pueda instalarlas y utilizarlas. En [Provider Requirements](https://developer.hashicorp.com/terraform/language/providers/requirements)  documenta cómo declarar providers de manera que Terraform los pueda instalar. 
 
 
+#### Configuración del provider
+Las configuraciones del Provider pertenecen al directorio raíz de la configuración Terraform. (Los modulos hijos, reciben su configuración de provider del módulo raíz; para más información mira [The Module providers Meta-Argument](https://developer.hashicorp.com/terraform/language/meta-arguments/module-providers) y [Module Development: Providers Within Modules](https://developer.hashicorp.com/terraform/language/modules/develop/providers))
+
+Una configuración de provider se crea utilizando un bloque ```provider```:
+
+```terraform
+provider "google" {
+  project = "acme-app"
+  region  = "us-central1"
+}
+```
+
+El nombre dado al encabezado del bloque (```"google"``` en este ejemplo) es el [nombre local](https://developer.hashicorp.com/terraform/language/providers/requirements#local-names) de la configuración del provider a configurar. Este provider debe estar ay incluido en un bloque ```required_providers```.
+
+El cuerpo del bloque (lo que está entre ```{``` y ```}```) contiene argumentos de configuración para el provider. La mayoría de argumentos en esta sección está ndefinidos por el mismo provider; en este ejemplo, tanto ```project``` como ```region``` son especificos del provider ```google```.
+
+Puedes usar [expresiones](https://developer.hashicorp.com/terraform/language/expressions) en valores de estos argumentos de configuración, pero solo pueden hacer referencia a valores conocidos antes de que la configuración sea aplicada. Esto significa que puedes hacer referencia de forma segura a variables de entrada, pero no a atributos exportados por recursos (con la excepción de argumentos de recursos que están especificados directamente en la configuración).
+
+La documentación de los provider debe listar qué argumentos de configuración espera. Para providers distribuidos en el Registro de Terraform, la documentación versionada está disponible en la página de cada provider, desde el link Documentación en el encabezado del privider.
+
+Algunos providers puede utilizar variables de entorno Shell (u otras fuentes alternativas, como perfiles de instancia VM) como valores para algunos de sus argumentos; cuando están disponibles, recomendamos utilizar esto como una forma de mantener credenciales fuera de tu código Terraform. 
+
+Además hay otros "meta-arguments" que son definidos por terraform mismo y disponibles para todos los bloques de ```provider```:
+- [alias](https://developer.hashicorp.com/terraform/language/providers/configuration#alias-multiple-provider-configurations) para utilizar el mismo provider con diferentes configuraciones para diferentes recursos.
+
+No como muchos otors objetos en el lenguaje TErraform, un bloque ```provider``` puede ser omitido si sus contenidos fueran vacíos. Terraform asume que una configuración vacía por defecto para cualquier povider que no está explicitamente configurado.
+
+##### alias: Configuraciones múltiples de provider
+Opcionalmente puedes definir múltiples configuraciones para el mismo provider y selecionar cual utilizar para un recurso o para un módulo. La razón principal de esto es dar soporte a múltiples regiones para una plataforma Cloud; otros ejemplos incluyen hacer objetivo multiples Docker hosts, etc.
+
+Para clerar múltiples configuraciones para un proveedor dado, incluye múltoples bloques de ```provider``` para el mismo nombre de provider. Para cada configuración adicional utiliza el meta-argumento ```alias``` para proveer un nombre de segmento extra. Por ejemplo:
+
+```terraform
+# The default provider configuration; resources that begin with `aws_` will use
+# it as the default, and it can be referenced as `aws`.
+provider "aws" {
+  region = "us-east-1"
+}
+
+# Additional provider configuration for west coast region; resources can
+# reference this as `aws.west`.
+provider "aws" {
+  alias  = "west"
+  region = "us-west-2"
+}
+```
+
+Para declarar un alias de configuración dentro de un módulo con el fin de recibir una configuración de provider alternativa del modulo padre, añade el argumento ```configuration_aliases``` para la entrada ```required_providers``` de ese provider. El siguiente ejemplo declara tanto los nombre de configuración del porivder  ```mycloud``` como ```mycloud.alrternate``` dentro del módulo contenedor:
+
+```terraform
+terraform {
+  required_providers {
+    mycloud = {
+      source  = "mycorp/mycloud"
+      version = "~> 1.0"
+      configuration_aliases = [ mycloud.alternate ]
+    }
+  }
+}
+```
+
+[[[[ Este enfoque permite que el módulo use múltiples configuraciones para el mismo proveedor, posibilitando escenarios avanzados de gestión de infraestructura donde diferentes recursos necesitan interactuar con el proveedor de manera diferente.]]]]
+
+#### Configuraciones por defecto de Provider
+Un bloque ```provider``` sin un argumento ```alias``` es la configuración por defecto para ese provider. Los recursos que no establezcan el meta argumento ```provider``` utilizarán el provider por defecto que coincida con la primera palabra del tipo de recurso. (por ejmplo, un recurso  ```aws_instance```  utilizará la configuración por defecto  del provider ```aws```  a menos que otra cosa sea establecida).
+
+Si cada configuración explicita de un provider tiene un alias, Terraform utilizara la configuración vacía implícita como la configuración predeterminada de ese provider. (Si el provider tiene algún argumento de configuración requerido, Terraform generará un error cuando los recursos predeterminen a al configuración vacía.)
+
+#### Referirse a configuraciones alternativas de providers
+Cuando Terraform necesita el nombre de una configuración de un provider, espera una referencia de la forma ```<PROVIEDER NAME>.<ALIAS>```. En el ejemplo de arriba, ```aws.west``` haría referencia al provider que tiene la regioón ```us-west-2```. 
+
+Estas referencias son expresioens especiales. Como referencias a otras entidades nombradas (por ejemplo, ```var.image_id```), no son strings y no necesitan estar entre comillas. Pero son solo válidas en meta-argumentos especificos de ```resource```, ```data```, y bloques de ```module```, y no puede ser usadas en expresiones arbitrarias.
+
+#### Seleccionar configuraciones alternativas de Provider
+Por defecto, los recursos utilizan una configuración por defecto de un provider (uno sin un argumento ```alias```) inferido de la primera palabra del tipo de recurso.
+
+Para utilizar una configuración de provider alternativa o fuende dee datos, estable su meta-argumento ```provider``` a la referencia ```<PROVIEDER NAME>.<ALIAS>```:
+
+```terraform
+resource "aws_instance" "foo" {
+  provider = aws.west
+
+  # ...
+}
+```
+
+Para seleccionar un provider alternativo en un módulo hijo, utiliza su meta argumento ```providers``` para especificar qué configuración provider  debería ser mapeada a qué nombres de providers locales dentro del módulo:
+```terraform
+module "aws_vpc" {
+  source = "./aws_vpc"
+  providers = {
+    aws = aws.west
+  }
+}
+```
+
+Los módulos tienen unos requisitos especiales al pasar providers, consulta [The module providers Meta-Argument](https://developer.hashicorp.com/terraform/language/meta-arguments/module-providers) para más detalles. En la mayoría de casos, sólomódulos raíz deberían definir configuraciones de provider, con todos los módulos hijo obteniendo sus configuraciones de provider de sus padres.
+</details>
 

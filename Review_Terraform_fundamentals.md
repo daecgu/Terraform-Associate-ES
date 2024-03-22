@@ -3,7 +3,8 @@
 Completa los tutoriales ["Get Started"](https://developer.hashicorp.com/terraform/tutorials/aws-get-started) para crear modificar y destruir tu primera infraestructura utilizando Terraform y aprender acerca de los Terraform providers y los conceptos básicos de Terraform state.
 <details>
 <summary> Tutoriales "Get Started" </summary>
-  
+
+---------------------------------------------------------------------------
 Algunos tutoriales tienen laboratorios interactivos, o tienen su documentación para Windos/Linux/Mac. EN ESTE PROYECTO DE TRADUCCIÓN únicamente cubriré Linux y en concreto Ubuntu/Debian, el resto quedan en los enlaces a la la página original que traduzco. 
 
 ### [¿Qué es infraestructura como código con Terraform?](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/infrastructure-as-code)
@@ -595,6 +596,7 @@ Para una experiencia práctica al flujo de trabajo impulsado por VCS de Terrafor
 
 </details>
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
 </details>
 
 ### [Proposito del State de Terraform](https://developer.hashicorp.com/terraform/language/state/purpose)

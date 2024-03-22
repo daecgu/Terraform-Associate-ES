@@ -911,3 +911,37 @@ Providers están escritos en Go, utilizando el plugin Terraform SDK. Para más i
 
 </details>
 
+### Cómo trabaja Terraform con Plugins
+Terraform es una herramienta para consturir, cambiar y versionar infraestructura de forma segura y eficiente. TErraform se construye en una arquitectura basada en plugins, permitiendo a desarrolladores ampliar TErraform escribiendo nuevos plugins o compilando versiones modificadas de los existentes. 
+
+Terraform está dividido lógicamente en dos partes principales: Nucleo de Terraform (Terraform core) y Terraform Plugins. El núcleo de Terraform utiliza llamadas a procedimientos remotos (RPC) para comunicarse con los Plugins de Terraform, y ofrece muchos caminos para descubrir y cargar los plugins a utilizar. Los plugins de terraform exponen una implementación para un servicio específico, como AWS, o un provisioner, como Bash. 
+
+#### Núcleo de Terraform
+El núcleo de Terraform es un [binario compilado estáticamente](https://en.wikipedia.org/wiki/Static_build#Static_building) escrito en el lenguaje de programación [Go](https://golang.org/). El binario compilado es la herramienta de línea de comandos (CLI) ```terraform```, el punto de accesio para cualquiera que utilice Terraform. El código fuente está disponible en [github](https://github.com/hashicorp/terraform).
+
+#### Responsabilidades primaria del núcleo de TErraform
+- Infraestructura como código: leer e interpolar archivos de configuración y módulos.
+- Manejo del estado de los recursos
+- Construcción del [Resource Graph](https://developer.hashicorp.com/terraform/internals/graph)
+- Ejecución del plan.
+- Comunicación con los plugins por RPC.
+
+#### Terraform Plugins
+Los plugins de Terraform está nescritos en Go y son binarios ejecutables llamado por el Nucleo de Terraform a través de RPC. Cada Plugin expone una implementación para un servicio específico, como AWS, o prisioner como Bash. Todos los Providers y Provisioners utilizados en configuraciones Terraform son Plguins. Son ejecutados como un proceso separado y se comunican  con el binario de Terraform a traves de una interfaz RPC. Terraform tiene diversos Provisioners incorporados, mientras que los providers son descubiertos dinámicamente según necesidad. El núcleo de Terraformprovee marco de trabajo de alto nivel que abtrae la forma en la que los plugins son encontrados y la comunicación RPC, de manera que los desarrolladores no tienen que gestionar esto. 
+
+Lo terraform Plugins son los responsables de la implementación especifica de dominio de su tipo.
+
+#### Responsabilidades primarias de los plugins de Provider:
+- Inicialización de cualquier librería utilizada para realizar las llamadas API.
+- Autenticación con la infraestructura del Provider.
+- Definicion de los recursos administrados y fuente de datos que señalan a los servicios especificos.
+- Definir funciones que habiliten o simplifiquen la lógica computacional para las configuraciones de los profesionales.
+
+##### Responsabilidades de Provisioner Plugins:
+- Ejecutar comandos o scripts en el recurso designado después de la creación o en la destrucción.
+
+####
+
+
+
+

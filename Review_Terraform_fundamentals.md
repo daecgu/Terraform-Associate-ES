@@ -1078,7 +1078,7 @@ Los prividers de Terraform administra recursos comunicandose entre Terraform y l
 Cuando multiples usuarios o herramientas de automatización ejecutan la misma configuración Terraform, deberían todos utilizar la misma versión de los providers requeridos. Hay dos formas para manejar las versiones de provider en tu configuración.
 
 1. Especificar la versión de provider como restricción en tu configuracción en el bloque ```terraform```.
-2. Utilizar el archivo [archivo de bloqeuo de dependencias](https://developer.hashicorp.com/terraform/language/files/dependency-lock)
+2. Utilizar el archivo [archivo de bloqueo de dependencias](https://developer.hashicorp.com/terraform/language/files/dependency-lock)
 
 Si no limitas adecuadamente la versión del provider, Terraform descargará la última versión del provider que cumpla con la restricción de versión. Esto puede llevar a cambios inesperados en la infraestructura. Al especificar versiones de proveedor cuidadosamente delimitadas y utilizando el archivo de bloqueo de dependencias, puedes asegurarte de que Terraform esté utilizando la versión correcta del proveedor para que tu configuración se aplique de manera consistente. 
 
@@ -1112,7 +1112,140 @@ cd learn-terraform-provider-versioning
 Este directorio es un proyecto Terraform pre inicializado con tres archivos: ```main.tf```, ```terrafor.tf``` y ```.terraform.lock.hlc```. HashiCorp ha publicado una nueva versión del AWS provider desde que este espacio de trabajo ha sido inicializado por primera vez.
 
 #### Explora ```main.tf```
-Abre el 
+Abre el archivo ```main.tf```. Teste archivo utiliza los providers AWS y "random" para desplegar un S3 bucket con un nombre aleatorio en la región ```us-west-2``` .
+
+```terraform
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "random_pet" "petname" {
+  length    = 5
+  separator = "-"
+}
+
+resource "aws_s3_bucket" "sample" {
+  bucket = random_pet.petname.id
+
+  acl    = "public-read"
+  region = "us-west-2"
+
+  tags = {
+    public_bucket = true
+  }
+}
+```
+
+### Explora ```terraform.tf```
+Abre el archivo ```terraform.tf```. Aquí encontrarás el bloque que especifica la versión del provider requerido y la versión requerida de Terraform para esta configuración.
+
+```terraform
+terraform {
+  required_providers {
+    random = {
+      source  = "hashicorp/random"
+      version = "3.1.0"
+    }
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 2.0.0"
+    }
+  }
+
+  required_version = ">= 1.1"
+}
+```
+
+El bloque ```terraform``` contiene  el bloque ```required_providers```, el cual especifica el nombre del local provider, la dirección de la fuente y la versión. 
+Cuando inicializas esta configuración, Terraform descargará:
+1. Versión 3.1.0 dle proveedor Random.
+2. La última versión del AWS provider que sea superior a 2.0.0. El operador restrictivo ```>=``` especifica la versión mínima del provider que es compatible con la configuración.
+
+El bloque Terraform también especifica que solo los binarios de Terraform más nuevos que la versión v1.1.x pueden ejecutarse utilizando el operador ```>=```.
+
+#### Explora ```terraform.lock.hcl```
+Cuando inicializas una configuración terraform por primera vez con Terraform 1.1 o superior, Terraform genera un archivo nuevo ```.terraform.lock.hcl``` en el directorio de trabajo activo. Deberías incluir el archivo de bloqueo de dependencias en tu repositorio de contorl de versiones para asegurarte de que Terraform utilice siempre las mismas versiones de provider entre tu equipo y entornos de ejecución remotos.
+
+Abre el archivo ```terraform.lock.hcl```:
+
+```terraform
+# This file is maintained automatically by "terraform init".
+# Manual edits may be lost in future updates.
+
+provider "registry.terraform.io/hashicorp/aws" {
+  version     = "2.50.0"
+  constraints = ">= 2.0.0"
+  hashes = [
+    "h1:aKw4NLrMEAflsl1OXCCz6Ewo4ay9dpgSpkNHujRXXO8=",
+    ## ...
+    "zh:fdeaf059f86d0ab59cf68ece2e8cec522b506c47e2cfca7ba6125b1cd06b8680",
+  ]
+}
+
+provider "registry.terraform.io/hashicorp/random" {
+  version     = "3.1.0"
+  constraints = "3.1.0"
+  hashes = [
+    "h1:9cCiLO/Cqr6IUvMDSApCkQItooiYNatZpEXmcu0nnng=",
+    ## ...
+    "zh:f7605bd1437752114baf601bdf6931debe6dc6bfe3006eb7e9bb9080931dca8a",
+  ]
+}
+```
+
+Los dos providers especificados en tu ```terraform.tf```. el AWS provider version es v2.50.0. El cual cumple  el requisito ```>=2.0.0```. El provider rando está establecido a v3.1.0 y cumple los requisitos de versión.
+
+#### Inicializa y aplica la configuración
+Si estás utilizando Apple M1 o M2 CPU no vas a poder inicializar o aplicar la configuración por que el provider de AWS es muy antiguo para esos procesadores. Lee esta sección y sigue las otras, la configuración final funcionará como se espera.
+
+Abre tu ```terraform.tf``` y descomenta el bloque ```cloud```. Reemplaza el nombre de  ```organization``` con tu propio nombre de Terraform Cloud organization.
+
+```terraform
+terraform {
+  cloud {
+    organization = "organization-name"
+    workspaces {
+      name = "learn-terraform-provider-versioning"
+    }
+  }
+  required_providers {
+    random = {
+      source  = "hashicorp/random"
+      version = "3.0.0"
+    }
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 2.0.0"
+    }
+  }
+
+  required_version = ">= 1.1"
+}
+```
+
+Inicializa tu configuración. Terraform automáticamente creará el espacio de trabajo ```learn-terraform-provider-verioning``` en tu Terraform Cloud Organization.
+
+```sh
+terraform init
+```
+Recuerda que este tutorial asume que ya tienes en tus variables globales establecidas tus credenciales de AWS.
+
+En vez de instalar la última versión del AWS provider conforme a las restricciones de versión, Terraform instala la versión especificada en el Lock file. Mientras inicializas tu espacio de trabajo, Terraform lee el archivo de bloqueo de dependencias y descarga las versiones especificadas de AWS y Random prividers.
+
+Si terraform no encuentra un archivo de bloqueo de dependencias, descargará la última versión de los provider que cumplan las restricciones definidas en el bloque ```required_providers```. La siguiente tabla muestra qué provider Terraform descargaría en este escenario basado en las restricciones y la presencia del archivo de bloqueo de dependencias.
+
+
+# Corregir tabla https://developer.hashicorp.com/terraform/tutorials/configuration-language/provider-versioning 
+
+
+| Provider | Restricción de  | Consideraciones |
+|--------------|--------------|--------------|
+|  ```0.15.0``` | Solo Terraform v0.15.0  | Para actualizar Terraform, primero edita la configuración ```required_version```  |
+| ```>= 0.15```  | Cualquier version de Terraform v0.15.0 o superior | Incluye Terraform v1.0.0 y superiores  |
+| ``` ~> 0.15.0 ```  | Cualquier versión de Terraform v0.15.x, pero no v1.0 o superior | Las versiones menores están pensadas para no ser disruptivas  |
+| ``` <= 0.15, <2.0.0```  | Terraform v0.15.0 o superior, pero inferior que v2.0.0 | Evita actualizaciones major superiores |
 
 
 

@@ -1072,3 +1072,50 @@ module "aws_vpc" {
 Los módulos tienen unos requisitos especiales al pasar providers, consulta [The module providers Meta-Argument](https://developer.hashicorp.com/terraform/language/meta-arguments/module-providers) para más detalles. En la mayoría de casos, sólomódulos raíz deberían definir configuraciones de provider, con todos los módulos hijo obteniendo sus configuraciones de provider de sus padres.
 </details>
 
+### [Bloquear y actualizar versiones de provider](https://developer.hashicorp.com/terraform/tutorials/configuration-language/provider-versioning)
+Los prividers de Terraform administra recursos comunicandose entre Terraform y la API objetivo. Cuando la API objetivo cambia o añade funcionalidad, los mantenedores del provider puede actualizar la versión del provider.
+
+Cuando multiples usuarios o herramientas de automatización ejecutan la misma configuración Terraform, deberían todos utilizar la misma versión de los providers requeridos. Hay dos formas para manejar las versiones de provider en tu configuración.
+
+1. Especificar la versión de provider como restricción en tu configuracción en el bloque ```terraform```.
+2. Utilizar el archivo [archivo de bloqeuo de dependencias](https://developer.hashicorp.com/terraform/language/files/dependency-lock)
+
+Si no limitas adecuadamente la versión del provider, Terraform descargará la última versión del provider que cumpla con la restricción de versión. Esto puede llevar a cambios inesperados en la infraestructura. Al especificar versiones de proveedor cuidadosamente delimitadas y utilizando el archivo de bloqueo de dependencias, puedes asegurarte de que Terraform esté utilizando la versión correcta del proveedor para que tu configuración se aplique de manera consistente. 
+
+En este tutorial, crearás un S3 bucket de una configuración inicializada de Terraform. Entonces, actualizarás el archivo de bloqueo de dependencias para utilizar la última versión del AWS provider, y editar la configuración de terraform para un nuevo requisito de versión del provider.
+
+#### Prerequisitos
+Puedes completar este tutorial usando el mismo flujo de trabajo que Terraform Community Edition o Terraform Cloud. 
+
+Selecciona la pestaña Terraform Cloud para completar este tutorial utilizando Terraform Cloud.
+
+Este tutorial asume que estás familiarizado con el flujo de trabajo de Terraform y Terraform Cloud. Si eres nuevo en Terraform ,completa los tutoriales ["Get Started"](https://developer.hashicorp.com/terraform/tutorials/aws-get-started) antes de realizar este. Si eres nuevo en Terraform Cloud, completa el tutorial [Terraform Cloud Get Started](https://developer.hashicorp.com/terraform/tutorials/cloud-get-started).
+
+Con el fin de completar este tutorial, necesitarás: 
+- Terraform v1.1+ Instalado localmente.
+- Una cuenta AWS.
+- Una cuenta en Terraform Claud, con Terraform Cloud autenticado localmente.
+- Una Variable en Terraform Cloud que configure tus credenciales AWS.
+
+#### Clona el repositorio de ejemplo
+Clona el repositorio
+```sh
+git clone https://github.com/hashicorp/learn-terraform-provider-versioning.git
+```
+
+Navega al directorio del repositorio en tu terminal
+```sh
+cd learn-terraform-provider-versioning
+```
+
+#### Revisa las configuraciones
+Este directorio es un proyecto Terraform pre inicializado con tres archivos: ```main.tf```, ```terrafor.tf``` y ```.terraform.lock.hlc```. HashiCorp ha publicado una nueva versión del AWS provider desde que este espacio de trabajo ha sido inicializado por primera vez.
+
+#### Explora ```main.tf```
+Abre el 
+
+
+
+
+
+

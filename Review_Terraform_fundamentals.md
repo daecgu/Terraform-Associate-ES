@@ -1282,3 +1282,43 @@ Después de comprobar que los recursos se han desplegado correctamente, destruye
 Si has utilizado Terraform Cloud para este tutorial, después de destruir los recursos, elimina el espacio de trabajo ```learn-terraform-provider-verioning``` de tu organización Terraform Cloud. 
 
 </details>
+
+### [Archivo de Bloqueo de Dependencias (Dependency lock file)](https://developer.hashicorp.com/terraform/language/files/dependency-lock)
+
+Un aconfiguración de Terraform puede referise a dos tipos diferentes de dependencias externas que vienen de fuera del propio código base:
+- Providers, que son plugins que amplian Terraform para interactuar con sistemas externos.
+- Módulos, los cuales dividen en grupos configuraciones Terraform escirtas en el lenguaje de Terraform, en abstracciones reutilizables.
+
+Los dos tipos de dependencia pueden ser publicados y actulizados de forma independiente del mismo Terraform y de las configuraciones que dependen de ellas. Por esta razón Terraform debe determinaqué versiones de estas dependencias son compatibles con la configuración actual y cual versión están seleccionadas para utilizar.
+
+Las restricciones de versión dentro de la configuración determina qué versiones  de las dependencias son potencialmente compatibles, pero después de seleccionar una versión específica de cada dependencia, Terraform recuerda las decisiones que ha hecho en un archivo de bloqueo de dependencias, de manera que pueda (por defecto) tomar la misma decisión en el futuro. 
+
+En el momento presente, el archivo de bloqueo de dependencias lleva seguimiento únicamente de las dependencias de los provider. Terraform no recuerda versiones de las elecciones de los modulos remotos. De esta manera, Terraform siempre seleccionará la versión más reciente del módulo que cumpla las restricciones de versión para ese módulo. Puedes utilizar una versión exacta para segurar que Terraform siempre seleccionará esa misma versión para ese módulo. 
+
+#### ¿dónde se encuentra el "Lock File"?
+El archivo de bloqueo de dependencia es un archivo que pertenece a la configuración en general ás que a cada módulo por separado en la configuración. Por esta razón Terraform lo crea y espera encontrarlo en el actual directorio de trabajo cuando ejecutas Terraform, que es el directorio que contiene los arhcivos ```.tf``` del módulo raíz de tu configuración.
+
+El archivo de bloqueo de depndencias (lock file) se llamará siempre ```.terraform.lock.hcl```, y este nombre significa que es un archivo de bloque para varios objetos que terraform atrapa en el subdirectorio ```.terraform``` de tu directorio de trabajo. 
+
+Terraform automáticamente crea o actualiza el archivo de bloqueo de dependencias cada vez que ejecutas el comando ```terraform init```. Debes incluir este archivo en tu sistema de control de versiones de manera que puedas discutir posibles cambiso en tus dependencias externas a través de la revisión de código, tal como discutirías posibles cambios en tu propia confiuración. 
+
+El archivo de bloqueo de dependencias utiliza la misma sintaxis de bajo nivel que el lenguaje principal de Terraform, pero el archivo de bloqueo de dependencias no es en sí mismo un archivo de configuración del lenguaje de Terraform. Se nombra con el sufijo ```.hcl``` en lugar de ```.tf``` para señalar esa diferencia.
+
+#### Comportamiento de la instalación de dependencias.
+Cuando ```terraform init``` está trabajando en instalar todos los prividers necesarios para una configuración, Terraform considera ambos tanto las restricciones de versión en la configuración y la versión seleccionada en el "lock file".
+
+Si un provider en concreto no tiene una versión que haya sido guardada en el "lock file", Terraform seleccionará la versión más reciente disponible que encaje con las restricciones, entonces actualizará el "lock file" para incluir esa selección. 
+
+Si un providider en concreto ya está registrado en el Lock File, Terraform siempre reseleccionará esa versión para la instalación, incluso si una nueva versión está disponible. Puedes sobreescribir este comportamiento añadiendo la opción ```-upgrade``` cuando ejecutas el comando ```terraform init```, en ese caso, Terraform seleccionará las versiones más recientes disponibles que encajen con las restricciones.
+
+Si un ```terraform init``` realiza cambios en el "lock file", Terraform mencionaraá eso como parte de su salida. 
+
+```sh
+Terraform has made some changes to the provider dependency selections recorded
+in the .terraform.lock.hcl file. Review those changes and commit them to your
+version control system if they represent changes you intended to make.
+```
+
+Si ves este mensaje, puedes utilizar tu sistema de contorl e versiones para revisar los cambios que terraform ha propuesto en el archivo, y si son cambios que has hecho de forma intencional puedes enviar el cambio a traves de tu proceso habitual de revisión de código de tu equipo. 
+
+

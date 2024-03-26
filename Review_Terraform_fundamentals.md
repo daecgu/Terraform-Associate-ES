@@ -1321,4 +1321,10 @@ version control system if they represent changes you intended to make.
 
 Si ves este mensaje, puedes utilizar tu sistema de contorl e versiones para revisar los cambios que terraform ha propuesto en el archivo, y si son cambios que has hecho de forma intencional puedes enviar el cambio a traves de tu proceso habitual de revisión de código de tu equipo. 
 
+#### Checksum verification
+Terraform verificará que cada paquete que instala coincida con al menos uno de los "checksums" que previamente ha escrito en el "lock file", si no hay ninguno, devolverá un error indicando que no coincide ninguno de los checksums:
+
+Esta comprobación de checksum está pensada para ............------------------------------------------
+
+
 

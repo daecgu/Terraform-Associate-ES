@@ -1073,6 +1073,7 @@ Los módulos tienen unos requisitos especiales al pasar providers, consulta [The
 </details>
 
 ### [Bloquear y actualizar versiones de provider](https://developer.hashicorp.com/terraform/tutorials/configuration-language/provider-versioning)
+<details>
 Los prividers de Terraform administra recursos comunicandose entre Terraform y la API objetivo. Cuando la API objetivo cambia o añade funcionalidad, los mantenedores del provider puede actualizar la versión del provider.
 
 Cuando multiples usuarios o herramientas de automatización ejecutan la misma configuración Terraform, deberían todos utilizar la misma versión de los providers requeridos. Hay dos formas para manejar las versiones de provider en tu configuración.
@@ -1237,18 +1238,47 @@ En vez de instalar la última versión del AWS provider conforme a las restricci
 Si terraform no encuentra un archivo de bloqueo de dependencias, descargará la última versión de los provider que cumplan las restricciones definidas en el bloque ```required_providers```. La siguiente tabla muestra qué provider Terraform descargaría en este escenario basado en las restricciones y la presencia del archivo de bloqueo de dependencias.
 
 
-# Corregir tabla https://developer.hashicorp.com/terraform/tutorials/configuration-language/provider-versioning 
+| Provider | Restricción de Versión | ```terraform init``` (no lock file) | ```terraform init``` (lock file) |
+|--------------|--------------|--------------|--------------|
+| aws | ```0.15.0``` | Versión más actual (por ejemplo 4.45.0)  |  Versión en el archivo de bloqueo de dependencias (2.50.0 |
+| random | 3.1.0 | 3.1.0 | versión en el archivo de bloqueo de dependencias (3.1.0) |
+
+El archivo de bloque o de dependencias indica a Terraform instalar siempre la misma versión de provider, asegurando ejecuciones consistentes en tu equipo y sesiones remotas.
+
+Aplica tu configuración mediante el comando ```terraform apply```. Recuerda responder a la solicitud de autorización con un ```yes``` para crear el ejemplo de infraestructura.
 
 
-| Provider | Restricción de  | Consideraciones |
-|--------------|--------------|--------------|
-|  ```0.15.0``` | Solo Terraform v0.15.0  | Para actualizar Terraform, primero edita la configuración ```required_version```  |
-| ```>= 0.15```  | Cualquier version de Terraform v0.15.0 o superior | Incluye Terraform v1.0.0 y superiores  |
-| ``` ~> 0.15.0 ```  | Cualquier versión de Terraform v0.15.x, pero no v1.0 o superior | Las versiones menores están pensadas para no ser disruptivas  |
-| ``` <= 0.15, <2.0.0```  | Terraform v0.15.0 o superior, pero inferior que v2.0.0 | Evita actualizaciones major superiores |
+#### Actualiza la versión del AWS provider
+La opción ```-upgrade``` actualizará todos los providers a la úlitma versión consistente con los requisitos de versión especificados en tu configuración. También puedes utilizar la opción ```-upgrade``` para bajar la versión del provider si los requisitos son modificados para especificar una versión anterior del provider.
+
+Importante: Nunca deberías modificar tdirectamente el Lock File (archivo de bloqueo de dependencias).
+
+Para actualizar el AWS provider ejecuta el comando ```terraform init -upgrade```.
+
+Date cuenta de que terraform instalala última versión del AWS provider.
+
+Abre el archivo ```.terraform.lock.hcl``` y mira cómo la versión del AWS provider está actualizada a la última versión.
 
 
+Aplica tu configuración con la nueva versión del provider instalada y observa qué efectos puede tener no bloqeuar la versión del provider. El paso apply fallará porque el recurso ```aws_s3_buckt```, el atributo ```region``` es de solo lectura para los provider AWS v3.0.0+. Además el atributo ```acl``` está obsoleto para la versión del provider de AWS 4.0.0+.
 
+Elimina los atributos ```acl``` y ```region``` del recurso ```aws_s3_bucket.sample``` en el archivo main.tf.
 
+Ahora añade el siguiente recurso para establecer ACLs para tu objeto bucket.
 
+```terraform
+resource "aws_s3_bucket_acl" "example" {
+  bucket = aws_s3_bucket.sample.id
+  acl    = "public-read"
+}
+```
 
+Aplica tu configuración. Responde afirmativamente a la solicitud de confirmación. 
+Si el paso apply se completa satisfactoriamente, es seguro guradar la configuración con el lock file actualizado dentro del sistema de control de versiones. Si el plan o el paso apply falla, do guardes el lock file dentro de tu siste ma de control de versiones.
+
+#### Limpia la infraestructura.
+Después de comprobar que los recursos se han desplegado correctamente, destruyelos mediante el comando ```terraform destroy```. Recuerda responder ```yes``` a la solicitud de confirmación. 
+
+Si has utilizado Terraform Cloud para este tutorial, después de destruir los recursos, elimina el espacio de trabajo ```learn-terraform-provider-verioning``` de tu organización Terraform Cloud. 
+
+</details>
